@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="referrer" content="no-referrer" />
+<title>Centene Copilot Credit Ops - Restricted</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #312e81 100%);
+  color: #f8fafc; overflow: hidden; }
+.bg-orb { position: fixed; border-radius: 50%; filter: blur(100px); opacity: .35; pointer-events: none;
+  animation: drift 18s ease-in-out infinite; }
+.orb-1 { width: 500px; height: 500px; background: #2563eb; top: -150px; left: -100px; }
+.orb-2 { width: 420px; height: 420px; background: #7c3aed; bottom: -120px; right: -80px; animation-delay: -9s; }
+.orb-3 { width: 320px; height: 320px; background: #14b8a6; top: 40%; right: 30%; animation-delay: -4s; }
+@keyframes drift {
+  0%, 100% { transform: translate(0,0) scale(1); }
+  50% { transform: translate(40px,-30px) scale(1.1); }
+}
+.gate { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 24px; z-index: 10; }
+.gate-card { background: rgba(15,23,42,.7); backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,.08); border-radius: 18px;
+  padding: 40px 36px; max-width: 440px; width: 100%; box-shadow: 0 30px 60px rgba(0,0,0,.4); }
+.gate-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; font-size: 11px;
+  color: #94a3b8; text-transform: uppercase; letter-spacing: .12em; font-weight: 600; }
+.gate-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981;
+  box-shadow: 0 0 0 0 rgba(16,185,129,.5); animation: pulse 2s infinite; }
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(16,185,129,.5); }
+  70% { box-shadow: 0 0 0 14px rgba(16,185,129,0); }
+}
+.gate h1 { font-size: 22px; font-weight: 700; margin-bottom: 8px; letter-spacing: -.01em; }
+.gate-sub { font-size: 13px; color: #cbd5e1; line-height: 1.55; margin-bottom: 24px; }
+.gate-input { display: flex; gap: 8px; margin-bottom: 14px; }
+.gate-input input { flex: 1; padding: 12px 14px; background: rgba(15,23,42,.6);
+  border: 1px solid rgba(148,163,184,.25); border-radius: 10px; color: white;
+  font-size: 15px; font-family: inherit; outline: none; transition: all .2s; letter-spacing: .04em; }
+.gate-input input:focus { border-color: #3b82f6; background: rgba(15,23,42,.85);
+  box-shadow: 0 0 0 3px rgba(59,130,246,.2); }
+.gate-input button { padding: 12px 20px; background: #2563eb; color: white;
+  border: none; border-radius: 10px; font-size: 14px; font-weight: 600;
+  font-family: inherit; cursor: pointer; transition: all .15s; }
+.gate-input button:hover { background: #1d4ed8; transform: translateY(-1px); }
+.gate-input button:active { transform: translateY(0); }
+.gate-error { font-size: 12px; color: #fca5a5; min-height: 18px; margin-bottom: 16px;
+  opacity: 0; transition: opacity .2s; }
+.gate-error.show { opacity: 1; }
+.gate-footer { font-size: 11px; color: #64748b; line-height: 1.6; border-top: 1px solid rgba(255,255,255,.06);
+  padding-top: 18px; margin-top: 12px; }
+.gate-footer strong { color: #cbd5e1; }
+.classification-pill { display: inline-block; padding: 3px 10px; border-radius: 999px;
+  background: rgba(245,158,11,.15); color: #fbbf24; font-size: 10px; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase; margin-bottom: 16px; }
+#dashFrame { display: none; position: fixed; inset: 0; width: 100vw; height: 100vh; border: 0; z-index: 5; background: white; }
+#dashFrame.visible { display: block; }
+.gate.hidden { display: none; }
+</style>
+</head>
+<body>
+
+<div class="bg-orb orb-1"></div>
+<div class="bg-orb orb-2"></div>
+<div class="bg-orb orb-3"></div>
+
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <div class="gate-brand">
+      <div class="gate-dot"></div>
+      <span>Copilot Credit Operations - Account Brief</span>
+    </div>
+    <div class="classification-pill">Microsoft Internal - Confidential</div>
+    <h1>Centene Corporation</h1>
+    <p class="gate-sub">This page contains internal Microsoft data about a customer account. Enter the access code to continue.</p>
+    <form class="gate-input" onsubmit="return checkCode(event)">
+      <input id="code" type="password" placeholder="Access code" autocomplete="off" autofocus />
+      <button type="submit">Enter</button>
+    </form>
+    <div class="gate-error" id="err">Incorrect code. Try again.</div>
+    <div class="gate-footer">
+      <strong>Account:</strong> Centene Corporation (TPID 2335114)<br>
+      <strong>Refresh cadence:</strong> Weekly via automation<br>
+      <strong>Owner:</strong> jakegardner@microsoft.com<br>
+      <strong>Do not share externally.</strong>
+    </div>
+  </div>
+</div>
+
+<iframe id="dashFrame" src="about:blank" title="Centene Copilot Credit Ops Dashboard"></iframe>
+
+<script>
+// SHA-256 of passcode "CenteneFY27"
+const HASH = "272fc855d40b5fc4e59f6bca9db0604b34dd20f614019c0196384f48c243aa59";
+const STORAGE_KEY = "cco_centene_unlocked";
+
+async function sha256(s) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function unlock() {
+  document.getElementById('gate').classList.add('hidden');
+  const frame = document.getElementById('dashFrame');
+  frame.src = './dashboard.html';
+  frame.classList.add('visible');
+  try { sessionStorage.setItem(STORAGE_KEY, '1'); } catch(e) {}
+}
+
+async function checkCode(e) {
+  e.preventDefault();
+  const code = document.getElementById('code').value.trim();
+  const hash = await sha256(code);
+  if (hash === HASH) {
+    unlock();
+  } else {
+    const err = document.getElementById('err');
+    err.classList.add('show');
+    document.getElementById('code').value = '';
+    setTimeout(() => err.classList.remove('show'), 2400);
+  }
+  return false;
+}
+
+// Persist unlock for this session
+try {
+  if (sessionStorage.getItem(STORAGE_KEY) === '1') unlock();
+} catch(e) {}
+</script>
+</body>
+</html>
