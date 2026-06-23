@@ -310,22 +310,22 @@ footer .footer-brand { color: var(--text-2); font-weight: 600; }
 <!-- =================== EXEC =================== -->
 <section class="panel active" id="panel-exec">
 
-  <!-- Entitlement CTA banner -->
-  <div class="ent-banner">
-    <div class="ent-banner-icon">⚠</div>
+  <!-- Verified entitlement banner (replaces awaiting-entitlement CTA) -->
+  <div class="ent-banner" style="background:linear-gradient(135deg,rgba(232,75,27,.06),rgba(139,92,246,.06));border-color:rgba(232,75,27,.25);border-left-color:var(--centene-coral);">
+    <div class="ent-banner-icon" style="background:rgba(232,75,27,.15);color:var(--centene-coral);">!</div>
     <div class="ent-banner-text">
-      <strong>Prepaid entitlement not yet populated.</strong>
-      <small>Drop the SKU + tier (or quantity) into <code>mappings/p3_commitments.csv</code> using one of the verified constructs in the Methodology tab. Next Monday's run auto-converts to credits and promotes 4 skipped formulas to live.</small>
+      <strong>Verified: Centene has ZERO purchased Copilot Studio capacity SKUs.</strong>
+      <small>Confirmed via MSXI Licenses by Enrollment &amp; PartNumber (TPID 2335114, Enrollment E0232554). 2× Copilot Studio Legacy USL (authoring) + 10× M365 Copilot Sub Add-on. <strong>No P3, no Credit Pack, no Agent P3.</strong> The 29.5K Copilot Credits/mo are running against the M365 Copilot built-in pool + tenant default — this is an expansion-opportunity signal, not an oversize risk.</small>
     </div>
-    <button class="ent-banner-cta" onclick="navigator.clipboard?.writeText('mappings/p3_commitments.csv'); this.textContent='Path copied';">Copy path</button>
+    <button class="ent-banner-cta" style="background:var(--centene-coral);" onclick="document.querySelector('[data-tab=investigate]').click();">See implications</button>
   </div>
 
   <!-- Verdict -->
   <div class="verdict">
-    <div class="verdict-icon">✓</div>
+    <div class="verdict-icon">↗</div>
     <div class="verdict-content">
-      <h2>Inside entitlement, zero PayGo exposure. Burn is 22% of peak.</h2>
-      <p>Centene's rolling 28-day Copilot Credit consumption is <strong>29,559</strong>, all Prepaid. The account has never exceeded entitlement in the lifetime of the source data. Current run-rate is 78% below the December 2025 peak of 131,587. Healthy on overage, possibly oversized on commitment, shallow on product breadth - investigate, don't alarm.</p>
+      <h2>Strong workload, zero purchased capacity. Expansion opportunity.</h2>
+      <p>Centene runs <strong>29,559</strong> billable Copilot Credits per 28d (100% prepaid, zero PayGo) plus <strong>1,198,536</strong> Copilot Studio agent credits over Apr-Jun 2026 — all against <strong>zero purchased Copilot Studio capacity</strong> (verified in MSXI Licenses by Enrollment). The workload is real and steady; the commercial packaging is not yet sized to it. A Copilot Credit P3 Tier 1 (300K credits / yr, 5% discount) or Credit Pack subscription (25K credits / month, $200/pack) would right-size their commitment.</p>
     </div>
   </div>
 
@@ -336,15 +336,15 @@ footer .footer-brand { color: var(--text-2); font-weight: 600; }
         <h3>Prepaid credits: purchased vs used vs PayGo</h3>
         <div class="sub">Trailing 28 days. Source: Customer Hub App [Production] / Copilot usage by customer.</div>
       </div>
-      <div class="hero-pill" style="background:rgba(245,158,11,.15);color:#b45309;">Awaiting entitlement</div>
+      <div class="hero-pill" style="background:rgba(232,75,27,.15);color:var(--centene-coral);">No capacity SKU purchased</div>
     </div>
     <div class="hero-grid">
       <svg id="chartPurchasedUsed"></svg>
       <div class="hero-stats">
-        <div class="hero-stat" data-tip="<strong>Prepaid entitlement</strong>: the contracted purchased credits per the customer's Copilot Studio Platform (Billed) plan. Populate in <code>mappings/p3_commitments.csv</code> to fill this in.">
+        <div class="hero-stat" data-tip="<strong>Prepaid entitlement</strong>: Centene has ZERO purchased Copilot Studio capacity SKUs. 2x Copilot Studio Legacy USL (authoring) + 10x M365 Copilot Sub Add-on per MSXI Licenses by Enrollment, but no Copilot Credit P3, no Credit Pack, no Agent P3.">
           <div class="hero-stat-label">Prepaid Purchased</div>
-          <div class="hero-stat-value empty">Awaiting entitlement</div>
-          <div class="hero-stat-sub">Source: MSXI Customer View / Licenses by Product (not in current profile scope)</div>
+          <div class="hero-stat-value" style="color:var(--centene-coral);">0</div>
+          <div class="hero-stat-sub">No P3, no Credit Pack, no Agent P3 · Verified MSXI 2026-06-23</div>
         </div>
         <div class="hero-stat" data-tip="<strong>29,559 prepaid Copilot Credits consumed</strong> in the last 28 days. 100% from the prepaid pool, 0 PayGo. <span class='tip-source'>Source: Customer Hub 'Copilot Credits by Product' visual</span>">
           <div class="hero-stat-label">Prepaid Used (28d)</div>
@@ -460,36 +460,38 @@ footer .footer-brand { color: var(--text-2); font-weight: 600; }
 <!-- =================== INVESTIGATE =================== -->
 <section class="panel" id="panel-investigate">
   <div class="invest-card">
-    <h3>📉 The Dec 2025 peak: 131,587 → 29,559 today</h3>
-    <div class="invest-sub">A 78% drop from peak to current burn. This is the one thing on this account worth investigating this quarter. Three hypotheses, three immediate next steps. No new data hunt required — these can all be answered from sources already in scope.</div>
+    <h3>The real story: zero purchased capacity, material workload</h3>
+    <div class="invest-sub">MSXI Licenses by Enrollment confirms Centene has no Copilot Credit P3, no Credit Pack, no Microsoft Agent P3. Yet they consume 29.5K Copilot Credits/mo + 1.2M Copilot Studio agent credits/mo. This re-frames the Dec 2025 peak from "oversized commitment" (the original hypothesis) to "demonstrated workload running against built-in pools" — which is a commercial conversation, not a usage investigation.</div>
     <div class="invest-grid">
       <div class="invest-col">
-        <h4>Hypotheses (most → least likely)</h4>
+        <h4>What's covering the consumption</h4>
         <ul class="invest-list">
-          <li><strong>Project-bound spike completed.</strong> Power Automate flow set ran heavy in Dec 2025 for an open-enrollment or year-end task and finished. Healthiest outcome — confirms entitlement is right-sized for steady state.</li>
-          <li><strong>Workflow turned off.</strong> A recurring flow was disabled, retired, or migrated. Worth knowing — may indicate workload moving to a different platform.</li>
-          <li><strong>Quiet decline.</strong> Same workloads running but less usage. Least likely given user base is stable, but possible if users shifted to other tools.</li>
+          <li><strong>10× M365 Copilot Sub Add-on</strong> (Part 83I-00001). Includes built-in M365 Copilot agentic Copilot Credit allowance.</li>
+          <li><strong>2× Copilot Studio Legacy USL</strong> (Part SYS-00001). Authoring licenses for makers, NOT runtime capacity.</li>
+          <li><strong>Tenant default credit pool</strong>. Covers low-volume Copilot Studio usage before metering kicks in.</li>
+          <li><strong>25× Microsoft Agent 365 Frontier Extension</strong> (free provisioning, AAS-73476). Not a billed entitlement.</li>
         </ul>
       </div>
       <div class="invest-col">
-        <h4>Where the answer lives</h4>
+        <h4>Right-sizing options</h4>
         <ul class="invest-list actions">
-          <li><a href="https://msit.powerbi.com/groups/756d15e5-0be9-4df3-9b1c-5e05a238cb25/reports/e9c29386-db57-4ae9-847a-4ad2ac90726e" target="_blank">Customer Hub / Copilot usage by customer →</a> Filter TPID 2335114, "Product usage trends" tab. Pivot to Dec 2025 and look at top consuming Power Automate flows by user/run count.</li>
-          <li><a href="https://msit.powerbi.com/groups/10cec39e-1e96-4976-b453-dca32046a452/reports/b0111f17-9616-45dd-b791-1f7fa408259a" target="_blank">Copilot Studio Agents detail →</a> Per-tenant detail table, check whether the Generative-orchestration tenant's credit rate dropped or whether activity moved to Classic.</li>
-          <li><strong>Tenant admin conversation.</strong> Best human source. Ask: "Did anything change in your Power Automate workflows between Dec 2025 and Feb 2026?"</li>
+          <li><strong>Copilot Credit P3 Tier 1</strong>: 300,000 credits/yr, 5% discount, ~$28,500 net. Covers ~10 months of current burn (29.5K × 12 = 354K projected annual demand).</li>
+          <li><strong>Copilot Credit P3 Tier 2</strong>: 1.5M credits/yr, 6% discount. Covers projected demand 4× over with headroom for the Dec-style peak (131K spike).</li>
+          <li><strong>Copilot Studio License (Credit Pack)</strong>: 25K credits/mo, $200/pack/mo (~$2,400/yr). Monthly subscription, no rollover. Closest fit to current 26K MTD.</li>
+          <li><strong>Microsoft Agent P3 Tier 1</strong>: 20K ACU = 2M credits/yr, 5% discount. Foundry-inclusive; over-sizes Copilot Studio but adds room for broader agent platform usage.</li>
         </ul>
       </div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-h"><h3>Attribution mystery: 805 Copilot Studio C2 users, 0 attributed credits</h3><span class="card-sub">Worth a 5-min check before pulling reports</span></div>
-    <p style="margin:0 0 10px;color:var(--text-2);font-size:13.5px;line-height:1.6;">The "Copilot Studio C2 User" product line shows 805 monthly active users with -10.56% MoM. But the Copilot Credits by Product visual attributes <strong>zero</strong> Copilot Credits to this product. Two possibilities:</p>
-    <ul class="invest-list">
-      <li><strong>Attribution mapping gap.</strong> Their consumption is rolling up under "Microsoft Copilot Studio" (4,369 credits / 28d). If so, the actual Copilot Studio footprint is ~4.4K, not 0 + 4.4K. Real product breadth is fine.</li>
-      <li><strong>Truly free-tier usage.</strong> C2 is a license SKU that may include base capacity. If 805 users are below a meter, no credits get billed. Real product breadth is wider, no expansion friction.</li>
+    <div class="card-h"><h3>Suggested next step: commercial conversation</h3><span class="card-sub">Not "investigate the data" — talk to Centene about packaging</span></div>
+    <p style="margin:0 0 12px;color:var(--text-2);font-size:13.5px;line-height:1.6;">Centene is getting Copilot Studio value at the M365 Copilot built-in tier. The workload is steady enough (29K-35K credits/mo, peaks to 131K) that they would benefit from explicit capacity packaging, both for FinOps visibility and to avoid surprise PayGo charges if a flow suddenly scales. Best ask:</p>
+    <ul class="invest-list" style="font-size:13.5px;">
+      <li><strong>Talk to:</strong> Centene's IT FinOps / Copilot Studio admin (Dmytro Tluchak surfaced in recent licensing thread; brand-level: Brandon Callendar, Nick Barnhart)</li>
+      <li><strong>Ask:</strong> "We're seeing ~30K Copilot Credits / month from your Power Automate workflows and Copilot Studio agents. As you scale, would Copilot Credit P3 (annual commit, discount) or Copilot Studio License (monthly pack) give you better FinOps control than the current M365 Copilot built-in pool?"</li>
+      <li><strong>Why now:</strong> Centene already has 805 MAU on Copilot Studio C2 and 423 on Copilot Studio (full table on Operator tab). Adoption is locked in — only the commercial wrapper is missing.</li>
     </ul>
-    <p style="margin:12px 0 0;color:var(--text-2);font-size:13px;font-style:italic;">Either way, the answer reframes the "shallow adoption" finding. Recommend a 5-minute look at how Copilot Studio C2 attribution is defined in the source dataset before declaring an expansion plan.</p>
   </div>
 </section>
 
@@ -711,11 +713,11 @@ function renderPurchasedUsed() {
   svg.attr('viewBox', `0 0 ${W} ${H}`).selectAll('*').remove();
 
   const data = [
-    { label: "Prepaid Purchased", v: null, color: "#94a3b8", empty: true },
+    { label: "Prepaid Purchased", v: 0, color: "#E84B1B", verified_zero: true },
     { label: "Prepaid Used (28d)", v: 29559, color: "var(--cs-purple)" },
     { label: "PayGo Used (28d)", v: 0, color: "#10b981" }
   ];
-  const maxV = 50000; // placeholder scale until entitlement populated
+  const maxV = 50000; // dashboard scale
   const y = d3.scaleBand().domain(data.map(d => d.label)).range([M.t, H - M.b]).padding(.3);
   const x = d3.scaleLinear().domain([0, maxV]).range([M.l, W - M.r]);
 
@@ -731,33 +733,24 @@ function renderPurchasedUsed() {
   svg.append('g').selectAll('rect').data(data).join('rect')
     .attr('x', M.l).attr('y', d => y(d.label) + 4).attr('height', y.bandwidth() - 8)
     .attr('width', 0)
-    .attr('fill', d => d.empty ? 'url(#diag)' : d.color)
-    .attr('stroke', d => d.empty ? '#cbd5e1' : 'none')
-    .attr('stroke-dasharray', d => d.empty ? '4,3' : null)
+    .attr('fill', d => d.color)
     .attr('rx', 4).style('cursor','help')
     .each(function(d) {
-      this.setAttribute('data-tip', d.empty
-        ? `<strong>${d.label}</strong>: awaiting entitlement value. Populate <code>mappings/p3_commitments.csv</code> to fill this bar.`
-        : `<strong>${d.label}</strong>: ${d.v.toLocaleString()} credits<br><span class='tip-source'>${d.label.includes('Prepaid') ? 'From Customer Hub Prepaid 28d total' : 'From Customer Hub PayGo 28d total'}</span>`);
+      this.setAttribute('data-tip', d.verified_zero
+        ? `<strong>${d.label}: 0</strong><br>Centene has no purchased Copilot Studio capacity SKU.<br><span class='tip-source'>Verified MSXI Licenses by Enrollment, 2026-06-23</span>`
+        : `<strong>${d.label}</strong>: ${d.v.toLocaleString()} credits<br><span class='tip-source'>${d.label.includes('Prepaid Used') ? 'Customer Hub Prepaid 28d total' : 'Customer Hub PayGo 28d total'}</span>`);
     })
     .transition().duration(900).delay((d,i) => i*80)
-    .attr('width', d => d.empty ? x(maxV) - M.l : Math.max(2, x(d.v) - M.l));
-
-  // diagonal stripe pattern for empty state
-  const defs = svg.append('defs');
-  const pattern = defs.append('pattern').attr('id', 'diag').attr('width', 8).attr('height', 8)
-    .attr('patternUnits', 'userSpaceOnUse').attr('patternTransform', 'rotate(45)');
-  pattern.append('rect').attr('width', 8).attr('height', 8).attr('fill', '#f1f5f9');
-  pattern.append('rect').attr('width', 2).attr('height', 8).attr('fill', '#cbd5e1');
+    .attr('width', d => d.v === 0 ? 8 : Math.max(2, x(d.v) - M.l));
 
   // value labels
   svg.append('g').selectAll('text').data(data).join('text')
-    .attr('x', d => d.empty ? M.l + 12 : Math.max(M.l + 32, x(d.v || 0) - 6))
+    .attr('x', d => d.v === 0 ? M.l + 14 : Math.max(M.l + 32, x(d.v) - 6))
     .attr('y', d => y(d.label) + y.bandwidth()/2 + 5)
-    .attr('text-anchor', d => d.empty ? 'start' : 'end')
+    .attr('text-anchor', d => d.v === 0 ? 'start' : 'end')
     .style('font-size','12px').style('font-weight','700').style('opacity', 0)
-    .style('fill', d => d.empty ? '#8892a6' : 'white')
-    .text(d => d.empty ? 'awaiting entitlement' : d.v.toLocaleString())
+    .style('fill', d => d.v === 0 ? 'var(--centene-coral)' : 'white')
+    .text(d => d.v === 0 ? (d.verified_zero ? '0 — none purchased' : '0') : d.v.toLocaleString())
     .transition().delay(1000).duration(400).style('opacity', 1);
 }
 
