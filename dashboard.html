@@ -315,7 +315,7 @@ footer .footer-brand { color: var(--text-2); font-weight: 600; }
     <div class="ent-banner-icon">⚠</div>
     <div class="ent-banner-text">
       <strong>Prepaid entitlement not yet populated.</strong>
-      <small>Without the purchased credit number, % consumed, runway, and adoption-risk band can't be computed. Drop the value into <code>mappings/p3_commitments.csv</code>, push, and next Monday's run will auto-promote 4 formulas from skipped to live.</small>
+      <small>Drop the SKU + tier (or quantity) into <code>mappings/p3_commitments.csv</code> using one of the verified constructs in the Methodology tab. Next Monday's run auto-converts to credits and promotes 4 skipped formulas to live.</small>
     </div>
     <button class="ent-banner-cta" onclick="navigator.clipboard?.writeText('mappings/p3_commitments.csv'); this.textContent='Path copied';">Copy path</button>
   </div>
@@ -566,7 +566,38 @@ footer .footer-brand { color: var(--text-2); font-weight: 600; }
     </table>
   </div>
 
-  <div class="section-title">Formula register v1.0</div>
+  <div class="section-title">SKU → Credit conversion (verified against Microsoft Copilot Credits Guide, June 2026)</div>
+  <div class="card">
+    <p style="margin:0 0 14px;color:var(--text-2);font-size:13px;">When the entitlement is populated in <code>mappings/p3_commitments.csv</code>, the dashboard auto-converts purchased SKU quantity to total Copilot Credits using these official ratios. <a href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/billing-licensing" target="_blank" style="color:var(--cs-blue);">Microsoft Learn source →</a></p>
+    <table class="product-table">
+      <thead><tr><th>SKU construct</th><th>Unit</th><th>1× quantity =</th><th>Term</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Copilot Credit P3</strong><br><span style="font-size:11px;color:var(--text-3);">Pre-Purchase Plan, tier-based 1-9</span></td>
+          <td>Tier</td>
+          <td>T1: 300K · T2: 1.5M · T3: 3M · T4: 15M · T5: 30M · T6: 75M · T7: 150M · T8: 225M · T9: 300M credits</td>
+          <td>1 year, no rollover</td></tr>
+        <tr><td><strong>Microsoft Agent P3</strong><br><span style="font-size:11px;color:var(--text-3);">Covers Foundry + Copilot Credit agentic services</span></td>
+          <td>ACU</td>
+          <td><strong>1 ACU = 100 credits</strong> · T1: 20K ACU (2M cr) · T2: 100K ACU (10M cr) · T3: 500K ACU (50M cr)</td>
+          <td>1 year, no rollover</td></tr>
+        <tr><td><strong>Copilot Studio License (Credit Pack)</strong><br><span style="font-size:11px;color:var(--text-3);">Monthly subscription</span></td>
+          <td>Pack</td>
+          <td><strong>1 pack = 25,000 credits / month</strong> · $200/pack/mo (billed annually)</td>
+          <td>Monthly, does NOT roll over</td></tr>
+        <tr><td><strong>Copilot Credit PayGo</strong></td>
+          <td>Credit</td>
+          <td><strong>$0.01 / credit</strong> · billed in arrears</td>
+          <td>Metered</td></tr>
+        <tr><td>Copilot Studio Messages (legacy)</td>
+          <td>—</td>
+          <td>Renamed to Copilot Credits Sept 2025 · no automatic conversion</td>
+          <td>—</td></tr>
+      </tbody>
+    </table>
+    <p style="margin:14px 0 0;color:var(--text-3);font-size:11px;font-style:italic;">Source: Microsoft Copilot Credits Guide (June 2026) + Microsoft Copilot Studio Licensing Guide (June 2026). PDFs cached at <code>copilot-credit-ops/centene/raw/copilot-credit-guide.pdf</code> and <code>copilot-studio-licensing-guide.pdf</code>. Persisted as formula_register v1.1.</p>
+  </div>
+
+  <div class="section-title">Formula register v1.1</div>
   <div class="card">
     <table class="product-table">
       <thead><tr><th>ID</th><th>Name</th><th>Logic</th><th class="num">Value</th><th>Confidence</th><th>Status</th></tr></thead>
@@ -576,8 +607,8 @@ footer .footer-brand { color: var(--text-2); font-weight: 600; }
         <tr><td>F003</td><td>payg_credits_consumed</td><td><code>SUM where billing_type = 'pay-as-you-go'</code></td><td class="num">0</td><td>HIGH</td><td><span class="status-pill status-ok">OK</span></td></tr>
         <tr><td>F004</td><td>3mo_burn_rate</td><td><code>SUM(28d)</code> (28d proxy, not true 90d)</td><td class="num">29,559</td><td>MEDIUM</td><td><span class="status-pill status-partial">Approx</span></td></tr>
         <tr><td>F005</td><td>mom_growth_rate</td><td>(current − prior) / prior</td><td class="num">—</td><td>—</td><td><span class="status-pill status-skipped">Skipped</span></td></tr>
-        <tr><td>F006</td><td>credits_purchased</td><td>From commitment source</td><td class="num">—</td><td>—</td><td><span class="status-pill status-skipped">Needs entitlement</span></td></tr>
-        <tr><td>F007</td><td>credits_remaining</td><td><code>purchased − consumed</code></td><td class="num">—</td><td>—</td><td><span class="status-pill status-skipped">Needs entitlement</span></td></tr>
+        <tr><td>F006</td><td>credits_purchased</td><td>SKU + tier → credits via verified Microsoft ratios (v1.1)</td><td class="num">—</td><td>—</td><td><span class="status-pill status-skipped">Needs SKU + tier</span></td></tr>
+        <tr><td>F007</td><td>credits_remaining</td><td><code>purchased − consumed_ytd</code></td><td class="num">—</td><td>—</td><td><span class="status-pill status-skipped">Needs entitlement</span></td></tr>
         <tr><td>F008</td><td>percent_consumed</td><td><code>consumed / purchased</code></td><td class="num">—</td><td>—</td><td><span class="status-pill status-skipped">Needs entitlement</span></td></tr>
         <tr><td>F009</td><td>runway_months</td><td><code>remaining / burn_rate</code></td><td class="num">—</td><td>—</td><td><span class="status-pill status-skipped">Needs entitlement</span></td></tr>
         <tr><td>F010</td><td>adoption_risk_band</td><td>Percent-consumed thresholds</td><td class="num">likely LOW</td><td>PARTIAL</td><td><span class="status-pill status-partial">Indirect</span></td></tr>
