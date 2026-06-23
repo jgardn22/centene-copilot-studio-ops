@@ -3,23 +3,33 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Centene Corporation - Copilot Credit Operations</title>
+<title>Centene - Copilot Credit Operations</title>
 <script src="https://cdn.jsdelivr.net/npm/d3@7.8.5/dist/d3.min.js"></script>
 <style>
 :root {
-  --bg: #f6f8fb;
+  --bg: #f7f8fb;
   --surface: #ffffff;
-  --surface-2: #f0f4f9;
-  --border: #e3e8ef;
-  --text: #1a1f2e;
+  --surface-2: #eef1f6;
+  --border: #e0e5ed;
+  --text: #161a25;
   --text-2: #4a5468;
   --text-3: #8892a6;
-  --accent-blue: #2563eb;
+
+  /* Microsoft Copilot Studio accent */
+  --cs-purple: #8B5CF6;
+  --cs-purple-2: #6d28d9;
+  --cs-blue: #2563eb;
+
+  /* Centene brand */
+  --centene-coral: #E84B1B;
+  --centene-navy: #1A2B49;
+  --centene-gold: #F4A93B;
+
   --accent-emerald: #10b981;
-  --accent-violet: #7c3aed;
   --accent-amber: #f59e0b;
   --accent-rose: #f43f5e;
   --accent-teal: #14b8a6;
+
   --shadow-sm: 0 1px 2px rgba(15,23,42,.04), 0 1px 3px rgba(15,23,42,.06);
   --shadow-md: 0 4px 6px rgba(15,23,42,.04), 0 10px 15px rgba(15,23,42,.06);
   --shadow-lg: 0 10px 25px rgba(15,23,42,.08), 0 20px 40px rgba(15,23,42,.06);
@@ -30,97 +40,206 @@ html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text);
   font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
   font-size: 14px; line-height: 1.5; overflow-x: hidden;
 }
-canvas#bgCanvas { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; opacity: .55; }
-.orb { position: fixed; border-radius: 50%; filter: blur(80px); opacity: .35; z-index: 0; pointer-events: none; animation: drift 22s ease-in-out infinite; }
-.orb-1 { width: 480px; height: 480px; background: radial-gradient(circle, #6ea8fe 0%, transparent 70%); top: -120px; left: -120px; }
-.orb-2 { width: 380px; height: 380px; background: radial-gradient(circle, #34d399 0%, transparent 70%); bottom: -80px; right: -100px; animation-delay: -8s; }
-.orb-3 { width: 320px; height: 320px; background: radial-gradient(circle, #c4b5fd 0%, transparent 70%); top: 40%; right: 30%; animation-delay: -14s; }
+
+/* === Ambient motion === */
+canvas#bgCanvas { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; opacity: .4; }
+.orb { position: fixed; border-radius: 50%; filter: blur(90px); opacity: .28; z-index: 0; pointer-events: none; animation: drift 24s ease-in-out infinite; }
+.orb-1 { width: 520px; height: 520px; background: radial-gradient(circle, var(--cs-purple) 0%, transparent 70%); top: -140px; left: -120px; }
+.orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, var(--centene-coral) 0%, transparent 70%); bottom: -100px; right: -100px; animation-delay: -9s; }
+.orb-3 { width: 340px; height: 340px; background: radial-gradient(circle, var(--cs-blue) 0%, transparent 70%); top: 40%; right: 28%; animation-delay: -15s; }
 @keyframes drift {
   0%, 100% { transform: translate(0,0) scale(1); }
   33% { transform: translate(60px,-40px) scale(1.08); }
   66% { transform: translate(-40px,30px) scale(.95); }
 }
-header { position: relative; z-index: 2; padding: 32px 48px 24px; }
-.brand { display: flex; align-items: center; gap: 14px; margin-bottom: 4px; }
-.brand-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent-emerald);
-  box-shadow: 0 0 0 0 rgba(16,185,129,.5); animation: pulse 2s infinite; }
+
+/* === Header === */
+header { position: relative; z-index: 2; padding: 28px 48px 20px;
+  background: linear-gradient(180deg, rgba(255,255,255,.7), rgba(247,248,251,0) 80%);
+  border-bottom: 1px solid var(--border); backdrop-filter: blur(8px); }
+.brand-row { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; margin-bottom: 14px; }
+.brand-block { display: flex; align-items: center; gap: 12px; }
+.brand-block .pulse-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent-emerald);
+  box-shadow: 0 0 0 0 rgba(16,185,129,.5); animation: pulse 2s infinite; flex-shrink: 0; }
 @keyframes pulse {
   0% { box-shadow: 0 0 0 0 rgba(16,185,129,.5); }
   70% { box-shadow: 0 0 0 14px rgba(16,185,129,0); }
-  100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
 }
-.brand-meta { font-size: 12px; color: var(--text-3); text-transform: uppercase; letter-spacing: .08em; font-weight: 600; }
-h1 { font-size: 30px; font-weight: 700; margin: 0; letter-spacing: -.02em; }
-.subtitle { color: var(--text-2); font-size: 15px; margin-top: 6px; max-width: 800px; }
-.refresh-meta { display: flex; gap: 24px; margin-top: 18px; font-size: 12px; color: var(--text-3); flex-wrap: wrap; }
+.brand-line { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: .1em; font-weight: 600; }
+.cs-logo { height: 36px; width: auto; opacity: .92; }
+.divider-v { width: 1px; height: 36px; background: var(--border); }
+
+.centene-mark { display: flex; align-items: center; gap: 10px; }
+.centene-mark .swoosh { width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--centene-coral) 0%, var(--centene-gold) 100%);
+  position: relative; flex-shrink: 0; box-shadow: 0 2px 8px rgba(232,75,27,.35);
+}
+.centene-mark .swoosh::after { content: ''; position: absolute; inset: 6px; border-radius: 50%; background: white; }
+.centene-mark .swoosh::before { content: ''; position: absolute; inset: 11px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--centene-coral) 0%, var(--centene-gold) 100%); z-index: 1; }
+.centene-mark .text { font-weight: 700; font-size: 18px; color: var(--centene-navy); letter-spacing: -.01em; }
+
+h1 { font-size: 32px; font-weight: 700; margin: 0; letter-spacing: -.02em; }
+h1 .subtle { color: var(--text-3); font-weight: 500; }
+.subtitle { color: var(--text-2); font-size: 14.5px; margin-top: 6px; max-width: 820px; }
+.refresh-meta { display: flex; gap: 22px; margin-top: 16px; font-size: 12px; color: var(--text-3); flex-wrap: wrap; }
 .refresh-meta span strong { color: var(--text-2); font-weight: 600; }
 
-.tabs { position: sticky; top: 0; z-index: 10; background: rgba(246,248,251,.92); backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border); padding: 0 48px; display: flex; gap: 4px; }
-.tab { padding: 14px 20px; cursor: pointer; font-size: 14px; font-weight: 500; color: var(--text-2);
+/* === Tabs === */
+.tabs { position: sticky; top: 0; z-index: 10; background: rgba(247,248,251,.94); backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border); padding: 0 48px; display: flex; gap: 2px; }
+.tab { padding: 14px 22px; cursor: pointer; font-size: 14px; font-weight: 500; color: var(--text-2);
   border-bottom: 2px solid transparent; transition: all .2s; user-select: none; }
-.tab:hover { color: var(--text); background: rgba(255,255,255,.5); }
-.tab.active { color: var(--accent-blue); border-bottom-color: var(--accent-blue); font-weight: 600; }
+.tab:hover { color: var(--text); background: rgba(255,255,255,.6); }
+.tab.active { color: var(--cs-purple); border-bottom-color: var(--cs-purple); font-weight: 600; }
 
-main { position: relative; z-index: 1; padding: 32px 48px 80px; max-width: 1500px; margin: 0 auto; }
+main { position: relative; z-index: 1; padding: 28px 48px 60px; max-width: 1500px; margin: 0 auto; }
 .panel { display: none; animation: fadeIn .35s ease; }
 .panel.active { display: block; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 28px; }
+/* === Entitlement CTA banner === */
+.ent-banner { background: linear-gradient(135deg, rgba(245,158,11,.08), rgba(232,75,27,.06));
+  border: 1px solid rgba(245,158,11,.25); border-left: 4px solid var(--accent-amber); border-radius: var(--radius);
+  padding: 18px 22px; margin-bottom: 22px; display: flex; align-items: center; gap: 18px; }
+.ent-banner-icon { width: 38px; height: 38px; border-radius: 10px;
+  background: rgba(245,158,11,.18); display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 20px; }
+.ent-banner-text { flex: 1; }
+.ent-banner-text strong { font-weight: 700; }
+.ent-banner-text small { display: block; color: var(--text-2); font-size: 12.5px; margin-top: 3px; }
+.ent-banner-cta { padding: 9px 16px; background: var(--accent-amber); color: white; border: none;
+  border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; }
+.ent-banner-cta:hover { background: #d97706; }
+
+/* === Verdict banner === */
+.verdict { background: linear-gradient(135deg, rgba(139,92,246,.06), rgba(16,185,129,.06));
+  border: 1px solid rgba(139,92,246,.18); border-radius: var(--radius);
+  padding: 22px 24px; margin-bottom: 24px; display: flex; gap: 18px; align-items: flex-start; }
+.verdict-icon { width: 46px; height: 46px; border-radius: 12px; background: var(--surface);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  border: 1px solid var(--border); font-size: 24px; box-shadow: var(--shadow-sm); }
+.verdict-content h2 { margin: 0 0 6px; font-size: 18px; font-weight: 700; letter-spacing: -.01em; }
+.verdict-content p { margin: 0; color: var(--text-2); font-size: 13.5px; line-height: 1.6; }
+
+/* === Hero card: Prepaid Purchased vs Used + PAYG === */
+.hero { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 24px; margin-bottom: 22px; box-shadow: var(--shadow-md); }
+.hero-h { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; flex-wrap: wrap; gap: 10px; }
+.hero-h h3 { margin: 0; font-size: 16px; font-weight: 700; }
+.hero-h .sub { font-size: 12px; color: var(--text-3); margin-top: 3px; }
+.hero-pill { padding: 4px 10px; border-radius: 999px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+.hero-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 28px; align-items: center; }
+@media (max-width: 950px) { .hero-grid { grid-template-columns: 1fr; } }
+#chartPurchasedUsed { width: 100%; height: 260px; }
+.hero-stats { display: flex; flex-direction: column; gap: 14px; }
+.hero-stat { padding: 14px 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-2); }
+.hero-stat-label { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+.hero-stat-value { font-size: 26px; font-weight: 700; margin-top: 4px; letter-spacing: -.02em; }
+.hero-stat-value.empty { color: var(--text-3); font-style: italic; font-size: 16px; font-weight: 500; }
+.hero-stat-sub { font-size: 12px; color: var(--text-2); margin-top: 4px; }
+
+/* === Burn-vs-Peak hero gauge === */
+.gauge-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 22px; box-shadow: var(--shadow-sm); }
+#chartGauge { width: 100%; height: 220px; }
+.gauge-readout { display: flex; gap: 24px; margin-top: 6px; justify-content: center; flex-wrap: wrap; }
+.gauge-readout > div { text-align: center; }
+.gauge-readout .num { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
+.gauge-readout .lbl { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: .06em; font-weight: 600; margin-top: 2px; }
+
+/* === KPI tiles === */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 24px; }
 .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-  padding: 20px; position: relative; transition: all .2s; cursor: help; box-shadow: var(--shadow-sm); overflow: hidden; }
-.kpi:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: rgba(37,99,235,.3); }
+  padding: 18px; position: relative; transition: all .2s; cursor: help; box-shadow: var(--shadow-sm); overflow: hidden; }
+.kpi:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: rgba(139,92,246,.3); }
 .kpi-label { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: .06em; font-weight: 600;
   display: flex; align-items: center; gap: 6px; }
 .kpi-info { width: 14px; height: 14px; border-radius: 50%; background: var(--surface-2); color: var(--text-3);
   font-size: 9px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
-.kpi-value { font-size: 32px; font-weight: 700; margin-top: 8px; letter-spacing: -.02em; line-height: 1.1; }
-.kpi-value.muted { color: var(--text-3); font-style: italic; font-size: 18px; font-weight: 500; }
-.kpi-sub { font-size: 12px; color: var(--text-2); margin-top: 6px; }
+.kpi-value { font-size: 28px; font-weight: 700; margin-top: 8px; letter-spacing: -.02em; line-height: 1.1; }
+.kpi-value.muted { color: var(--text-3); font-style: italic; font-size: 17px; font-weight: 500; }
+.kpi-sub { font-size: 12px; color: var(--text-2); margin-top: 4px; }
 .kpi-badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 10px;
-  font-weight: 600; text-transform: uppercase; letter-spacing: .04em; margin-top: 10px; }
+  font-weight: 600; text-transform: uppercase; letter-spacing: .04em; margin-top: 8px; }
 .badge-low { background: rgba(16,185,129,.1); color: #047857; }
 .badge-med { background: rgba(245,158,11,.1); color: #b45309; }
-.badge-high { background: rgba(244,63,94,.12); color: #be123c; }
-.badge-info { background: rgba(37,99,235,.1); color: #1d4ed8; }
-.badge-skip { background: var(--surface-2); color: var(--text-3); }
+.badge-info { background: rgba(139,92,246,.1); color: var(--cs-purple-2); }
 
-.kpi-pulse::after { content: ''; position: absolute; top: 14px; right: 14px;
-  width: 6px; height: 6px; border-radius: 50%; background: var(--accent-emerald);
-  box-shadow: 0 0 0 0 rgba(16,185,129,.6); animation: pulse 2.4s infinite; }
-
+/* === Tooltip === */
 [data-tip] { position: relative; }
 .tooltip { position: fixed; z-index: 100; background: #0f172a; color: #f8fafc;
-  padding: 12px 14px; border-radius: 10px; font-size: 12px; max-width: 320px;
+  padding: 12px 14px; border-radius: 10px; font-size: 12px; max-width: 340px;
   pointer-events: none; opacity: 0; transition: opacity .15s; box-shadow: var(--shadow-lg);
-  line-height: 1.5; }
+  line-height: 1.55; }
 .tooltip.visible { opacity: 1; }
 .tooltip strong { color: #fbbf24; }
 .tooltip .tip-source { color: #94a3b8; font-size: 10px; margin-top: 6px; padding-top: 6px;
   border-top: 1px solid rgba(255,255,255,.1); }
 
-.section-title { font-size: 13px; color: var(--text-3); text-transform: uppercase;
-  letter-spacing: .08em; font-weight: 600; margin: 32px 0 12px; }
-.section-title:first-child { margin-top: 0; }
+/* === Section title === */
+.section-title { font-size: 12px; color: var(--text-3); text-transform: uppercase;
+  letter-spacing: .1em; font-weight: 700; margin: 30px 0 12px; }
 
-.cards-row { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 28px; }
+/* === Cards === */
+.cards-row { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 22px; }
 @media (max-width: 1100px) { .cards-row { grid-template-columns: 1fr; } }
+.cards-row.equal { grid-template-columns: 1fr 1fr; }
 .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
   padding: 22px; box-shadow: var(--shadow-sm); }
 .card-h { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
 .card-h h3 { margin: 0; font-size: 15px; font-weight: 600; }
 .card-h .card-sub { font-size: 11px; color: var(--text-3); }
 
-.banner { background: linear-gradient(135deg, rgba(37,99,235,.06), rgba(16,185,129,.06));
-  border: 1px solid rgba(37,99,235,.15); border-radius: var(--radius);
-  padding: 20px 24px; margin-bottom: 24px; display: flex; gap: 18px; align-items: flex-start; }
-.banner-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--surface);
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-  border: 1px solid var(--border); font-size: 22px; }
-.banner-content h2 { margin: 0 0 4px; font-size: 17px; font-weight: 700; }
-.banner-content p { margin: 0; color: var(--text-2); font-size: 13px; line-height: 1.55; }
+/* === Adoption depth: two-column grouping === */
+.adoption-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 800px) { .adoption-grid { grid-template-columns: 1fr; } }
+.adoption-col { background: var(--surface-2); border-radius: 10px; padding: 16px; }
+.adoption-col h4 { margin: 0 0 4px; font-size: 13px; font-weight: 700; }
+.adoption-col .sub { font-size: 11px; color: var(--text-3); margin-bottom: 12px; }
+.adoption-col.driving h4 { color: var(--cs-purple-2); }
+.adoption-col.headroom h4 { color: var(--centene-coral); }
+.adoption-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,.04); font-size: 13px; }
+.adoption-row:last-child { border-bottom: none; }
+.adoption-row .name { color: var(--text); font-weight: 500; }
+.adoption-row .meta { display: flex; gap: 12px; align-items: center; }
+.adoption-row .mau { font-variant-numeric: tabular-nums; font-weight: 600; }
+.adoption-row .credits { font-size: 11px; color: var(--text-3); }
 
+/* === Investigation block === */
+.invest-card { background: linear-gradient(135deg, rgba(232,75,27,.04), rgba(245,158,11,.04));
+  border: 1px solid rgba(232,75,27,.15); border-radius: var(--radius); padding: 22px; margin-bottom: 22px; }
+.invest-card h3 { margin: 0 0 4px; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+.invest-card .invest-sub { color: var(--text-2); font-size: 13px; margin-bottom: 16px; }
+.invest-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+@media (max-width: 900px) { .invest-grid { grid-template-columns: 1fr; } }
+.invest-col h4 { margin: 0 0 8px; font-size: 12px; color: var(--text-3); text-transform: uppercase; letter-spacing: .06em; font-weight: 700; }
+.invest-list { list-style: none; padding: 0; margin: 0; }
+.invest-list li { padding: 7px 0 7px 22px; position: relative; font-size: 13px; color: var(--text); }
+.invest-list li::before { content: ''; position: absolute; left: 4px; top: 13px; width: 6px; height: 6px;
+  border-radius: 50%; background: var(--centene-coral); }
+.invest-list.actions li::before { background: var(--cs-purple); }
+.invest-list a { color: var(--cs-blue); text-decoration: none; font-weight: 500; }
+.invest-list a:hover { text-decoration: underline; }
+
+/* === Tenant drilldown === */
+.tenant-card { padding: 16px; border-radius: 10px; background: var(--surface-2); margin-bottom: 10px; }
+.tenant-h { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.tenant-name { font-weight: 600; font-size: 14px; }
+.tenant-share { font-size: 11px; padding: 2px 8px; border-radius: 999px; background: rgba(139,92,246,.12); color: var(--cs-purple-2); font-weight: 600; }
+.tenant-meta { font-size: 12px; color: var(--text-2); }
+.tenant-bar { height: 4px; background: rgba(0,0,0,.06); border-radius: 2px; margin: 8px 0 0; overflow: hidden; }
+.tenant-bar-fg { height: 100%; background: var(--cs-purple); border-radius: 2px; animation: barIn 1.2s cubic-bezier(.4,0,.2,1); }
+@keyframes barIn { from { transform: scaleX(0); transform-origin: left; } to { transform: scaleX(1); } }
+
+/* === Subsidiary callout === */
+.sub-callout { display: flex; gap: 14px; padding: 14px; border-radius: 10px; background: rgba(232,75,27,.05); border: 1px solid rgba(232,75,27,.15); }
+.sub-callout .num { font-size: 22px; font-weight: 700; color: var(--centene-coral); font-variant-numeric: tabular-nums; }
+.sub-callout .body { flex: 1; }
+.sub-callout strong { display: block; margin-bottom: 2px; }
+.sub-callout small { color: var(--text-2); font-size: 12px; }
+
+/* === Tables (used in operator/raw views) === */
 .product-table { width: 100%; border-collapse: collapse; font-size: 13px; }
 .product-table th { text-align: left; padding: 10px 12px; font-size: 11px; color: var(--text-3);
   text-transform: uppercase; letter-spacing: .06em; font-weight: 600; border-bottom: 1px solid var(--border); }
@@ -128,44 +247,22 @@ main { position: relative; z-index: 1; padding: 32px 48px 80px; max-width: 1500p
 .product-table td { padding: 12px; border-bottom: 1px solid rgba(227,232,239,.5); }
 .product-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
 .product-table tr:hover td { background: var(--surface-2); }
-.delta-pos { color: var(--accent-emerald); font-weight: 600; }
-.delta-neg { color: var(--accent-rose); font-weight: 600; }
-.delta-zero { color: var(--text-3); }
-
-.action-list { list-style: none; padding: 0; margin: 0; }
-.action-list li { padding: 14px 0; border-bottom: 1px solid var(--border); display: flex; gap: 14px; }
-.action-list li:last-child { border-bottom: none; padding-bottom: 0; }
-.action-num { width: 28px; height: 28px; border-radius: 50%; background: var(--accent-blue);
-  color: white; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.action-body strong { display: block; margin-bottom: 2px; }
-.action-body p { margin: 0; color: var(--text-2); font-size: 12.5px; }
-.action-body code { background: var(--surface-2); padding: 1px 5px; border-radius: 3px; font-size: 11px; }
-
-.formula-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
-.formula-table th { text-align: left; padding: 10px; font-size: 10px; color: var(--text-3);
-  text-transform: uppercase; letter-spacing: .06em; font-weight: 600; border-bottom: 1px solid var(--border); }
-.formula-table td { padding: 12px 10px; border-bottom: 1px solid rgba(227,232,239,.5); vertical-align: top; }
-.formula-table code { background: var(--surface-2); padding: 2px 6px; border-radius: 4px; font-size: 11px; color: var(--text-2); }
 .status-pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 10px; font-weight: 600; text-transform: uppercase; }
 .status-ok { background: rgba(16,185,129,.1); color: #047857; }
 .status-partial { background: rgba(245,158,11,.1); color: #b45309; }
 .status-skipped { background: var(--surface-2); color: var(--text-3); }
-
-.signal-card { display: flex; flex-direction: column; gap: 10px; padding: 16px;
-  background: var(--surface-2); border-radius: 10px; }
-.signal-card h4 { margin: 0; font-size: 12px; color: var(--text-3); text-transform: uppercase; letter-spacing: .06em; }
+.signal-card { padding: 16px; background: var(--surface-2); border-radius: 10px; }
+.signal-card h4 { margin: 0 0 8px; font-size: 12px; color: var(--text-3); text-transform: uppercase; letter-spacing: .06em; }
 .signal-card .value { font-size: 22px; font-weight: 700; }
 .signal-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
 
-footer { padding: 24px 48px; color: var(--text-3); font-size: 11px; text-align: center;
-  border-top: 1px solid var(--border); margin-top: 40px; }
-
-#chartTrend, #chartBurn { width: 100%; height: 280px; }
-#chartUsers { width: 100%; height: 260px; }
+footer { padding: 22px 48px; color: var(--text-3); font-size: 11px; text-align: center;
+  border-top: 1px solid var(--border); margin-top: 30px; }
+footer .footer-brand { color: var(--text-2); font-weight: 600; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
-  .orb, canvas#bgCanvas, .brand-dot, .kpi-pulse::after { display: none !important; }
+  .orb, canvas#bgCanvas, .pulse-dot { display: none !important; }
 }
 </style>
 </head>
@@ -178,115 +275,256 @@ footer { padding: 24px 48px; color: var(--text-3); font-size: 11px; text-align: 
 <div class="tooltip" id="tooltip"></div>
 
 <header>
-  <div class="brand">
-    <div class="brand-dot"></div>
-    <div class="brand-meta">Copilot Credit Operations - Account Brief</div>
+  <div class="brand-row">
+    <div class="centene-mark">
+      <div class="swoosh"></div>
+      <div class="text">Centene Corporation</div>
+    </div>
+    <div class="divider-v"></div>
+    <img src="./assets/copilot-studio.png" alt="Microsoft Copilot Studio" class="cs-logo" />
+    <div class="brand-block">
+      <div class="pulse-dot"></div>
+      <span class="brand-line">Credit Operations - Account Brief</span>
+    </div>
   </div>
-  <h1>Centene Corporation</h1>
-  <p class="subtitle">Read-first credit-consumption health, reconciled across the Copilot Studio Agents report and the Copilot usage-by-customer report. Quiet by default. Refreshes weekly via automation.</p>
+  <h1>Centene Copilot Credit Operations <span class="subtle">FY26 baseline</span></h1>
+  <p class="subtitle">Read-first credit-consumption health for Centene Corporation, reconciled across the Copilot Studio Agents report and the Copilot usage-by-customer report. Quiet by default. Refreshes weekly via automation.</p>
   <div class="refresh-meta">
     <span><strong>TPID</strong> 2335114</span>
-    <span><strong>Run</strong> 2026-06-23 12:33 MDT</span>
-    <span><strong>CS Studio last refresh</strong> 2026-06-16</span>
-    <span><strong>Customer Hub last refresh</strong> 2026-06-20 21:35 UTC</span>
-    <span><strong>Formula register</strong> v1.0</span>
+    <span><strong>Industry</strong> Healthcare</span>
+    <span><strong>Run</strong> 2026-06-23 13:55 MDT</span>
+    <span><strong>CS Studio refresh</strong> 2026-06-16</span>
+    <span><strong>Customer Hub refresh</strong> 2026-06-20 21:35 UTC</span>
   </div>
 </header>
 
 <div class="tabs">
   <div class="tab active" data-tab="exec">Executive view</div>
+  <div class="tab" data-tab="investigate">Investigate</div>
   <div class="tab" data-tab="operator">Operator view</div>
-  <div class="tab" data-tab="formulas">Formula trace</div>
-  <div class="tab" data-tab="raw">Raw signals</div>
+  <div class="tab" data-tab="methodology">Methodology &amp; confidence</div>
 </div>
 
 <main>
 
+<!-- =================== EXEC =================== -->
 <section class="panel active" id="panel-exec">
 
-  <div class="banner">
-    <div class="banner-icon">✓</div>
-    <div class="banner-content">
-      <h2>Inside entitlement, no PayGo exposure. Burn is 22% of peak.</h2>
-      <p>Centene's rolling 28-day Copilot Credit consumption is 29,559, all Prepaid. The account has never exceeded entitlement in the lifetime of the source data. Current run-rate is 78% below the December 2025 peak of 131,587. Worth a one-look investigation, not alarm.</p>
+  <!-- Entitlement CTA banner -->
+  <div class="ent-banner">
+    <div class="ent-banner-icon">⚠</div>
+    <div class="ent-banner-text">
+      <strong>Prepaid entitlement not yet populated.</strong>
+      <small>Without the purchased credit number, % consumed, runway, and adoption-risk band can't be computed. Drop the value into <code>mappings/p3_commitments.csv</code>, push, and next Monday's run will auto-promote 4 formulas from skipped to live.</small>
+    </div>
+    <button class="ent-banner-cta" onclick="navigator.clipboard?.writeText('mappings/p3_commitments.csv'); this.textContent='Path copied';">Copy path</button>
+  </div>
+
+  <!-- Verdict -->
+  <div class="verdict">
+    <div class="verdict-icon">✓</div>
+    <div class="verdict-content">
+      <h2>Inside entitlement, zero PayGo exposure. Burn is 22% of peak.</h2>
+      <p>Centene's rolling 28-day Copilot Credit consumption is <strong>29,559</strong>, all Prepaid. The account has never exceeded entitlement in the lifetime of the source data. Current run-rate is 78% below the December 2025 peak of 131,587. Healthy on overage, possibly oversized on commitment, shallow on product breadth - investigate, don't alarm.</p>
     </div>
   </div>
 
-  <div class="kpi-grid" id="kpiGrid"></div>
-
-  <div class="cards-row">
-    <div class="card">
-      <div class="card-h">
-        <h3>Prepaid Copilot Credit consumption by month</h3>
-        <span class="card-sub">From "Prepaid Copilot Credits by Month" visual, TPID 2335114</span>
+  <!-- HERO: Prepaid Purchased vs Used + PAYG -->
+  <div class="hero">
+    <div class="hero-h">
+      <div>
+        <h3>Prepaid credits: purchased vs used vs PayGo</h3>
+        <div class="sub">Trailing 28 days. Source: Customer Hub App [Production] / Copilot usage by customer.</div>
       </div>
-      <svg id="chartTrend"></svg>
+      <div class="hero-pill" style="background:rgba(245,158,11,.15);color:#b45309;">Awaiting entitlement</div>
     </div>
-    <div class="card">
-      <div class="card-h"><h3>Recommended next actions</h3></div>
-      <ul class="action-list">
-        <li>
-          <div class="action-num">1</div>
-          <div class="action-body">
-            <strong>Pull Dec 2025 peak consumers</strong>
-            <p>Identify which workflow, agent, or tenant drove the 131K spike. If project-bound and closed, confirm. If a recurring workflow that's been turned off, find out why.</p>
-          </div>
-        </li>
-        <li>
-          <div class="action-num">2</div>
-          <div class="action-body">
-            <strong>Map shallow-adoption products to expansion plays</strong>
-            <p>D365 Customer Service has 451 MAU but doesn't surface as a credit driver. Confirm attribution; if real headroom exists, this is the obvious agent-rollout target.</p>
-          </div>
-        </li>
-        <li>
-          <div class="action-num">3</div>
-          <div class="action-body">
-            <strong>Populate the entitlement number</strong>
-            <p>Add Centene's prepaid entitlement to <code>mappings/p3_commitments.csv</code>. Next weekly run auto-promotes runway, % consumed, and adoption-risk band from skipped to live.</p>
-          </div>
-        </li>
-      </ul>
+    <div class="hero-grid">
+      <svg id="chartPurchasedUsed"></svg>
+      <div class="hero-stats">
+        <div class="hero-stat" data-tip="<strong>Prepaid entitlement</strong>: the contracted purchased credits per the customer's Copilot Studio Platform (Billed) plan. Populate in <code>mappings/p3_commitments.csv</code> to fill this in.">
+          <div class="hero-stat-label">Prepaid Purchased</div>
+          <div class="hero-stat-value empty">Awaiting entitlement</div>
+          <div class="hero-stat-sub">Source: MSXI Customer View / Licenses by Product (not in current profile scope)</div>
+        </div>
+        <div class="hero-stat" data-tip="<strong>29,559 prepaid Copilot Credits consumed</strong> in the last 28 days. 100% from the prepaid pool, 0 PayGo. <span class='tip-source'>Source: Customer Hub 'Copilot Credits by Product' visual</span>">
+          <div class="hero-stat-label">Prepaid Used (28d)</div>
+          <div class="hero-stat-value" style="color:var(--cs-purple-2);">29,559</div>
+          <div class="hero-stat-sub">100% Prepaid · MTD: 26,021</div>
+        </div>
+        <div class="hero-stat" data-tip="<strong>Zero PayGo credits</strong> in the last 28 days and zero lifetime. No risk of unexpected overage billing.">
+          <div class="hero-stat-label">PayGo Used (28d)</div>
+          <div class="hero-stat-value" style="color:var(--accent-emerald);">0</div>
+          <div class="hero-stat-sub">Healthiest posture · 0 lifetime months over entitlement</div>
+        </div>
+      </div>
     </div>
   </div>
 
+  <!-- Burn-vs-Peak hero gauge + KPI tiles -->
   <div class="cards-row">
-    <div class="card">
-      <div class="card-h"><h3>Credits 28d vs MTD by product</h3><span class="card-sub">Copilot Credits, billable unit</span></div>
-      <svg id="chartBurn"></svg>
+    <div class="gauge-card">
+      <div class="card-h"><h3>Current burn vs 12-month peak</h3><span class="card-sub">Anchor for adoption-investigation hypothesis</span></div>
+      <svg id="chartGauge"></svg>
+      <div class="gauge-readout">
+        <div><div class="num" style="color:var(--cs-purple-2);">29,559</div><div class="lbl">Current 28d</div></div>
+        <div><div class="num" style="color:var(--accent-amber);">131,587</div><div class="lbl">Peak (Dec 2025)</div></div>
+        <div><div class="num" style="color:var(--centene-coral);">22%</div><div class="lbl">Of peak</div></div>
+        <div><div class="num" style="color:var(--accent-emerald);">0</div><div class="lbl">Months over</div></div>
+      </div>
     </div>
     <div class="card">
-      <div class="card-h"><h3>Active monthly users by product</h3><span class="card-sub">Top 6 products by MAU, current snapshot</span></div>
-      <svg id="chartUsers"></svg>
+      <div class="card-h"><h3>Headline KPIs</h3></div>
+      <div class="kpi-grid" id="kpiGrid" style="grid-template-columns:1fr 1fr;margin-bottom:0;"></div>
+    </div>
+  </div>
+
+  <!-- Monthly trend -->
+  <div class="card" style="margin-bottom:22px;">
+    <div class="card-h"><h3>Prepaid Copilot Credit consumption by month</h3><span class="card-sub">12-month view from "Prepaid Copilot Credits by Month" visual</span></div>
+    <svg id="chartTrend" style="width:100%;height:260px;"></svg>
+  </div>
+
+  <!-- Adoption depth grouping (replaces simple bar chart) -->
+  <div class="card" style="margin-bottom:22px;">
+    <div class="card-h">
+      <div>
+        <h3>Adoption depth: credit-driving vs activated-but-not-billing</h3>
+        <div class="card-sub" style="margin-top:3px;">Where credits flow vs where users actually are. The gap is the expansion opportunity.</div>
+      </div>
+    </div>
+    <div class="adoption-grid">
+      <div class="adoption-col driving">
+        <h4>Credit-driving products</h4>
+        <div class="sub">85% Power Automate · 15% Copilot Studio · 0% everything else</div>
+        <div class="adoption-row"><div class="name">Power Automate</div>
+          <div class="meta"><span class="mau">382 MAU</span><span class="credits">25,190 cr / 28d</span></div></div>
+        <div class="adoption-row"><div class="name">Microsoft Copilot Studio</div>
+          <div class="meta"><span class="mau">423 MAU</span><span class="credits">4,369 cr / 28d</span></div></div>
+      </div>
+      <div class="adoption-col headroom">
+        <h4>Activated but not billing (headroom)</h4>
+        <div class="sub">Active users exist, but no credit consumption attributed. Confirm attribution or target for expansion.</div>
+        <div class="adoption-row"><div class="name">Microsoft Copilot Studio C2 User</div>
+          <div class="meta"><span class="mau">805 MAU</span><span class="credits">no credits attributed</span></div></div>
+        <div class="adoption-row"><div class="name">Dataverse</div>
+          <div class="meta"><span class="mau">739 MAU</span><span class="credits">no credits attributed</span></div></div>
+        <div class="adoption-row"><div class="name">Power Apps</div>
+          <div class="meta"><span class="mau">706 MAU</span><span class="credits">no credits attributed</span></div></div>
+        <div class="adoption-row"><div class="name">D365 Customer Service</div>
+          <div class="meta"><span class="mau">451 MAU</span><span class="credits">no credits attributed</span></div></div>
+        <div class="adoption-row"><div class="name">Dataverse Knowledge Runtime Authed</div>
+          <div class="meta"><span class="mau">508 MAU</span><span class="credits">no credits attributed</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tenant drilldown + Subsidiary callout -->
+  <div class="cards-row equal">
+    <div class="card">
+      <div class="card-h"><h3>Per-tenant breakdown</h3><span class="card-sub">CS Studio Agents detail, May 16 - Jun 15</span></div>
+      <div class="tenant-card">
+        <div class="tenant-h"><div class="tenant-name">CENTENE CORPORATION · Generative</div><div class="tenant-share">99.98% of agent credits</div></div>
+        <div class="tenant-meta">1,152 auth conv · 21 autonomous runs · 3 unauth · <strong>1,198,263 agent credits</strong></div>
+        <div class="tenant-bar"><div class="tenant-bar-fg" style="width:99.98%"></div></div>
+      </div>
+      <div class="tenant-card">
+        <div class="tenant-h"><div class="tenant-name">CENTENE CORPORATION · Classic</div><div class="tenant-share" style="background:var(--surface);color:var(--text-3);">0.02%</div></div>
+        <div class="tenant-meta">62 auth conv · 0 runs · 0 unauth · 246 agent credits</div>
+        <div class="tenant-bar"><div class="tenant-bar-fg" style="width:.5%;background:var(--text-3);"></div></div>
+      </div>
+      <div class="tenant-card">
+        <div class="tenant-h"><div class="tenant-name">COMMUNITY MEDICAL GROUP · Generative</div><div class="tenant-share" style="background:var(--surface);color:var(--text-3);">0.002%</div></div>
+        <div class="tenant-meta">Subsidiary · 7 auth conv · 27 agent credits</div>
+        <div class="tenant-bar"><div class="tenant-bar-fg" style="width:.2%;background:var(--centene-coral);"></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h"><h3>Subsidiary signal</h3><span class="card-sub">Tenants rolled up under TPID 2335114</span></div>
+      <div class="sub-callout">
+        <div class="num">7</div>
+        <div class="body">
+          <strong>COMMUNITY MEDICAL GROUP</strong>
+          <small>Only 7 authenticated conversations and 27 agent credits in the trailing month. Either an active Centene subsidiary needing activation support, or a vestigial tenant adding noise. Confirm with the account team and either remove from rollup or include in the activation plan.</small>
+        </div>
+      </div>
+      <div class="section-title" style="margin-top:18px;">Recommended decisions</div>
+      <ul class="invest-list actions" style="font-size:13px;">
+        <li>Confirm COMMUNITY MEDICAL GROUP status with Centene tenant admin.</li>
+        <li>If active subsidiary, add to next Copilot Studio enablement session.</li>
+        <li>If vestigial, exclude from canonical mapping to reduce noise in future runs.</li>
+      </ul>
     </div>
   </div>
 </section>
 
+<!-- =================== INVESTIGATE =================== -->
+<section class="panel" id="panel-investigate">
+  <div class="invest-card">
+    <h3>📉 The Dec 2025 peak: 131,587 → 29,559 today</h3>
+    <div class="invest-sub">A 78% drop from peak to current burn. This is the one thing on this account worth investigating this quarter. Three hypotheses, three immediate next steps. No new data hunt required — these can all be answered from sources already in scope.</div>
+    <div class="invest-grid">
+      <div class="invest-col">
+        <h4>Hypotheses (most → least likely)</h4>
+        <ul class="invest-list">
+          <li><strong>Project-bound spike completed.</strong> Power Automate flow set ran heavy in Dec 2025 for an open-enrollment or year-end task and finished. Healthiest outcome — confirms entitlement is right-sized for steady state.</li>
+          <li><strong>Workflow turned off.</strong> A recurring flow was disabled, retired, or migrated. Worth knowing — may indicate workload moving to a different platform.</li>
+          <li><strong>Quiet decline.</strong> Same workloads running but less usage. Least likely given user base is stable, but possible if users shifted to other tools.</li>
+        </ul>
+      </div>
+      <div class="invest-col">
+        <h4>Where the answer lives</h4>
+        <ul class="invest-list actions">
+          <li><a href="https://msit.powerbi.com/groups/756d15e5-0be9-4df3-9b1c-5e05a238cb25/reports/e9c29386-db57-4ae9-847a-4ad2ac90726e" target="_blank">Customer Hub / Copilot usage by customer →</a> Filter TPID 2335114, "Product usage trends" tab. Pivot to Dec 2025 and look at top consuming Power Automate flows by user/run count.</li>
+          <li><a href="https://msit.powerbi.com/groups/10cec39e-1e96-4976-b453-dca32046a452/reports/b0111f17-9616-45dd-b791-1f7fa408259a" target="_blank">Copilot Studio Agents detail →</a> Per-tenant detail table, check whether the Generative-orchestration tenant's credit rate dropped or whether activity moved to Classic.</li>
+          <li><strong>Tenant admin conversation.</strong> Best human source. Ask: "Did anything change in your Power Automate workflows between Dec 2025 and Feb 2026?"</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><h3>Attribution mystery: 805 Copilot Studio C2 users, 0 attributed credits</h3><span class="card-sub">Worth a 5-min check before pulling reports</span></div>
+    <p style="margin:0 0 10px;color:var(--text-2);font-size:13.5px;line-height:1.6;">The "Copilot Studio C2 User" product line shows 805 monthly active users with -10.56% MoM. But the Copilot Credits by Product visual attributes <strong>zero</strong> Copilot Credits to this product. Two possibilities:</p>
+    <ul class="invest-list">
+      <li><strong>Attribution mapping gap.</strong> Their consumption is rolling up under "Microsoft Copilot Studio" (4,369 credits / 28d). If so, the actual Copilot Studio footprint is ~4.4K, not 0 + 4.4K. Real product breadth is fine.</li>
+      <li><strong>Truly free-tier usage.</strong> C2 is a license SKU that may include base capacity. If 805 users are below a meter, no credits get billed. Real product breadth is wider, no expansion friction.</li>
+    </ul>
+    <p style="margin:12px 0 0;color:var(--text-2);font-size:13px;font-style:italic;">Either way, the answer reframes the "shallow adoption" finding. Recommend a 5-minute look at how Copilot Studio C2 attribution is defined in the source dataset before declaring an expansion plan.</p>
+  </div>
+</section>
+
+<!-- =================== OPERATOR =================== -->
 <section class="panel" id="panel-operator">
   <div class="section-title">Source reality check</div>
   <div class="signal-row">
     <div class="signal-card"><h4>CS Studio Agents</h4><div class="value">AVAILABLE</div>
-      <div style="font-size:11px;color:var(--text-2);">Period May 16 - Jun 15, 2026. Stale ~8d vs today.</div></div>
+      <div style="font-size:11px;color:var(--text-2);margin-top:6px;">Period May 16 - Jun 15, 2026. Stale ~8d vs today.</div></div>
     <div class="signal-card"><h4>Customer Hub Usage</h4><div class="value">AVAILABLE</div>
-      <div style="font-size:11px;color:var(--text-2);">Refresh 2026-06-20 21:35 UTC. Exact name match.</div></div>
-    <div class="signal-card"><h4>P3 / Commitment</h4><div class="value" style="color:var(--accent-amber);">PARTIAL</div>
-      <div style="font-size:11px;color:var(--text-2);">Manual override stub created, unpopulated. COMMITMENT_MISSING logged.</div></div>
+      <div style="font-size:11px;color:var(--text-2);margin-top:6px;">Refresh 2026-06-20 21:35 UTC. Exact name match.</div></div>
+    <div class="signal-card"><h4>Entitlement (P3)</h4><div class="value" style="color:var(--accent-amber);">OUT OF PROFILE</div>
+      <div style="font-size:11px;color:var(--text-2);margin-top:6px;">MSXI Customer View slicer does not list TPID 2335114 in current STU BizApps profile.</div></div>
     <div class="signal-card"><h4>Mapping &amp; Formulas</h4><div class="value" style="color:var(--accent-emerald);">OK</div>
-      <div style="font-size:11px;color:var(--text-2);">canonical_accounts.json + formula_register.json v1.0 in place.</div></div>
+      <div style="font-size:11px;color:var(--text-2);margin-top:6px;">canonical_accounts.json + formula_register.json v1.0</div></div>
   </div>
 
-  <div class="section-title">Tenant rollup under TPID 2335114</div>
+  <div class="section-title">Per-product credit detail</div>
   <div class="card">
     <table class="product-table">
-      <thead><tr><th>Tenant</th><th>Orchestration</th><th>Industry</th><th class="num">Auth conv</th><th class="num">Autonomous runs</th><th class="num">Unauth conv</th><th class="num">Agent credits (May 16 - Jun 15)</th></tr></thead>
+      <thead><tr><th>Product</th><th class="num">All 28d</th><th class="num">Prepaid 28d</th><th class="num">PayGo 28d</th><th class="num">All MTD</th><th class="num">Prepaid MTD</th><th class="num">PayGo MTD</th></tr></thead>
       <tbody>
-        <tr><td>CENTENE CORPORATION</td><td><em style="color:var(--text-3);">Classic / blank</em></td><td>Healthcare</td><td class="num">62</td><td class="num">0</td><td class="num">0</td><td class="num">246.00</td></tr>
-        <tr><td>CENTENE CORPORATION</td><td>Generative</td><td>Healthcare</td><td class="num">1,152</td><td class="num">21</td><td class="num">3</td><td class="num">1,198,263.14</td></tr>
-        <tr><td>COMMUNITY MEDICAL GROUP</td><td>Generative</td><td>Healthcare</td><td class="num">7</td><td class="num">0</td><td class="num">0</td><td class="num">27.00</td></tr>
-        <tr style="font-weight:600;background:var(--surface-2);"><td colspan="3">Total</td><td class="num">1,221</td><td class="num">21</td><td class="num">3</td><td class="num">1,198,536.14</td></tr>
+        <tr><td>Power Automate</td><td class="num">25,190</td><td class="num">25,190</td><td class="num">0</td><td class="num">21,938</td><td class="num">21,938</td><td class="num">0</td></tr>
+        <tr><td>Microsoft Copilot Studio</td><td class="num">4,369</td><td class="num">4,369</td><td class="num">0</td><td class="num">4,082</td><td class="num">4,082</td><td class="num">0</td></tr>
+        <tr style="font-weight:600;background:var(--surface-2);"><td>Total</td><td class="num">29,559</td><td class="num">29,559</td><td class="num">0</td><td class="num">26,021</td><td class="num">26,021</td><td class="num">0</td></tr>
       </tbody>
     </table>
-    <p style="font-size:11px;color:var(--text-3);margin-top:12px;">Note: "Agent credits" here is a different unit than the billable Copilot Credits in the Executive view. Reconciliation kept separate per framework rules.</p>
+  </div>
+
+  <div class="section-title">Per-product user adoption (full table)</div>
+  <div class="card">
+    <table class="product-table">
+      <thead><tr><th>Product</th><th class="num">DAU</th><th class="num">WAU</th><th class="num">MAU</th><th class="num">MoM</th><th class="num">DAU/MAU</th><th class="num">WAU/MAU</th></tr></thead>
+      <tbody id="adoptionRows"></tbody>
+    </table>
   </div>
 
   <div class="section-title">Exception register</div>
@@ -294,97 +532,73 @@ footer { padding: 24px 48px; color: var(--text-3); font-size: 11px; text-align: 
     <table class="product-table">
       <thead><tr><th>Code</th><th class="num">Count</th><th>Description</th></tr></thead>
       <tbody>
-        <tr><td><code>COMMITMENT_MISSING</code></td><td class="num">1</td><td>Entitlement value not yet populated. Blocks F006-F009.</td></tr>
-        <tr><td><code>MANUAL_OVERRIDE_APPLIED</code></td><td class="num">1</td><td>Label normalization: workspace "Copilot Studio Usage" / report "Copilot Studio Agents" reconciled to user-stated "Power CAT Team / Copilot Studio Usage".</td></tr>
-        <tr><td><code>CALCULATION_SKIPPED</code></td><td class="num">5</td><td>F005 (account-level MoM not exposed), F006-F009 (depend on commitment).</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="section-title">Run log</div>
-  <div class="card">
-    <table class="product-table">
-      <thead><tr><th>Phase</th><th>Status</th><th>Note</th></tr></thead>
-      <tbody>
-        <tr><td>0 Reality check</td><td><span class="status-pill status-ok">Complete</span></td><td>Both Power BI reports verified.</td></tr>
-        <tr><td>1 Extraction</td><td><span class="status-pill status-ok">Complete</span></td><td>Centene-filtered extracts from both reports.</td></tr>
-        <tr><td>2 Normalization</td><td><span class="status-pill status-ok">Complete</span></td><td>Subsidiary COMMUNITY MEDICAL GROUP rolled up. Credit-unit distinction preserved.</td></tr>
-        <tr><td>3 Reconciliation</td><td><span class="status-pill status-ok">Complete</span></td><td>Account confidence HIGH (exact TPID).</td></tr>
-        <tr><td>4 Calculation</td><td><span class="status-pill status-partial">Partial</span></td><td>7 of 12 formulas computed.</td></tr>
-        <tr><td>5 Risk classification</td><td><span class="status-pill status-ok">Complete</span></td><td>ADOPTION_INVESTIGATION primary.</td></tr>
-        <tr><td>6 Output generation</td><td><span class="status-pill status-ok">Complete</span></td><td>Curated dataset, summaries, this dashboard.</td></tr>
-        <tr><td>7 Change detection</td><td><span class="status-pill status-skipped">N/A</span></td><td>First-run baseline. Arms next Monday.</td></tr>
+        <tr><td><code>COMMITMENT_MISSING</code></td><td class="num">1</td><td>Entitlement not yet populated. Blocks F006-F009.</td></tr>
+        <tr><td><code>ENTITLEMENT_VALUE_NOT_SURFACED</code></td><td class="num">1</td><td>MSXI Customer View under STU BizApps profile does not include Centene (TPID 2335114). Source switch or manual entry required.</td></tr>
+        <tr><td><code>MANUAL_OVERRIDE_APPLIED</code></td><td class="num">1</td><td>Label normalization on CS Studio workspace name.</td></tr>
+        <tr><td><code>CALCULATION_SKIPPED</code></td><td class="num">5</td><td>F005 + F006-F009.</td></tr>
       </tbody>
     </table>
   </div>
 </section>
 
-<section class="panel" id="panel-formulas">
-  <div class="section-title">Formula trace - register v1.0</div>
+<!-- =================== METHODOLOGY =================== -->
+<section class="panel" id="panel-methodology">
+  <div class="section-title">Sources, formulas, and confidence</div>
+
   <div class="card">
-    <table class="formula-table">
-      <thead><tr><th>ID</th><th>Name</th><th>Logic</th><th>Value</th><th>Confidence</th><th>Status</th></tr></thead>
+    <h3 style="margin:0 0 12px;font-size:15px;">Two Power BI reports drive this dashboard</h3>
+    <table class="product-table">
+      <thead><tr><th>Source</th><th>Workspace / Report</th><th>Refresh</th><th>Used for</th></tr></thead>
       <tbody>
-        <tr><td>F001</td><td>total_credits_consumed</td><td><code>SUM(credits_consumed) over 28d</code></td><td>29,559</td><td>HIGH</td><td><span class="status-pill status-ok">OK</span></td></tr>
-        <tr><td>F002</td><td>prepaid_credits_consumed</td><td><code>SUM where billing_type IN ('prepaid','committed')</code></td><td>29,559</td><td>HIGH</td><td><span class="status-pill status-ok">OK</span></td></tr>
-        <tr><td>F003</td><td>payg_credits_consumed</td><td><code>SUM where billing_type = 'pay-as-you-go'</code></td><td>0</td><td>HIGH</td><td><span class="status-pill status-ok">OK</span></td></tr>
-        <tr><td>F004</td><td>3mo_burn_rate</td><td><code>SUM(28d)</code> (approx; not true 90d)</td><td>29,559 / mo</td><td>MEDIUM</td><td><span class="status-pill status-partial">Approx</span></td></tr>
-        <tr><td>F005</td><td>mom_growth_rate</td><td>(current - prior) / prior</td><td>n/a</td><td>-</td><td><span class="status-pill status-skipped">Skipped</span></td></tr>
-        <tr><td>F006</td><td>credits_purchased</td><td>From commitment source</td><td>n/a</td><td>-</td><td><span class="status-pill status-skipped">COMMITMENT_MISSING</span></td></tr>
-        <tr><td>F007</td><td>credits_remaining</td><td><code>purchased - prepaid_consumed</code></td><td>n/a</td><td>-</td><td><span class="status-pill status-skipped">COMMITMENT_MISSING</span></td></tr>
-        <tr><td>F008</td><td>percent_consumed</td><td><code>prepaid_consumed / purchased</code></td><td>n/a</td><td>-</td><td><span class="status-pill status-skipped">COMMITMENT_MISSING</span></td></tr>
-        <tr><td>F009</td><td>runway_months</td><td><code>remaining / burn_rate</code></td><td>n/a</td><td>-</td><td><span class="status-pill status-skipped">COMMITMENT_MISSING</span></td></tr>
-        <tr><td>F010</td><td>adoption_risk_band</td><td>Rule: percent_consumed thresholds</td><td>likely LOW</td><td>PARTIAL</td><td><span class="status-pill status-partial">Indirect</span></td></tr>
-        <tr><td>F011</td><td>overage_risk_band</td><td>Rule: runway thresholds + PayGo signal</td><td>LOW</td><td>HIGH</td><td><span class="status-pill status-ok">OK</span></td></tr>
-        <tr><td>F012</td><td>expansion_signal</td><td>Rule: MoM &gt; 20% for 2+ mo AND runway &lt; 6</td><td>false</td><td>HIGH</td><td><span class="status-pill status-ok">OK</span></td></tr>
+        <tr><td><strong>Customer Hub</strong></td>
+          <td><a href="https://msit.powerbi.com/groups/756d15e5-0be9-4df3-9b1c-5e05a238cb25/reports/e9c29386-db57-4ae9-847a-4ad2ac90726e" target="_blank" style="color:var(--cs-blue);">Customer Hub App [Production] / Copilot usage by customer</a></td>
+          <td>2026-06-20 21:35 UTC</td>
+          <td>Billable Copilot Credits (Prepaid + PayGo), MAU per product, monthly trend, entitlement-breach lifetime count</td></tr>
+        <tr><td><strong>CS Studio Agents</strong></td>
+          <td><a href="https://msit.powerbi.com/groups/10cec39e-1e96-4976-b453-dca32046a452/reports/b0111f17-9616-45dd-b791-1f7fa408259a" target="_blank" style="color:var(--cs-blue);">Copilot Studio Usage / Copilot Studio Agents</a></td>
+          <td>2026-06-16 (period May 16 - Jun 15)</td>
+          <td>Per-tenant agent credits, authenticated conversations, autonomous runs, orchestration mix</td></tr>
+        <tr><td><strong>MSXI (out of profile)</strong></td>
+          <td>MSXI Customer View → Licenses by Product</td>
+          <td>—</td>
+          <td>Would supply Prepaid entitlement value, but TPID 2335114 not in current MSXI profile scope</td></tr>
       </tbody>
     </table>
   </div>
 
-  <div class="section-title">Classification rationale</div>
-  <div class="card">
-    <p style="margin:0 0 10px;"><strong>Primary band:</strong> ADOPTION_INVESTIGATION</p>
-    <p style="margin:0;">Centene is firmly inside entitlement (0 lifetime breaches, 0 PayGo). However, current burn rate (29,559 per month) is ~78% below peak (131,587 in Dec 2025). This is either healthy seasonal variance, a project-driven spike that completed, or quiet adoption decline. Recommended posture: investigate, not alarm. Two products dominate consumption (Power Automate 85%, Copilot Studio 15%); broader product adoption is shallow.</p>
-  </div>
-</section>
-
-<section class="panel" id="panel-raw">
-  <div class="section-title">Source files</div>
-  <div class="card" style="font-family: 'Consolas','Courier New',monospace; font-size:12.5px; white-space: pre;">copilot-credit-ops\centene\
-├─ runs\
-│  ├─ 2026-06-23-phase0.json
-│  └─ 2026-06-23-operator-summary.md
-├─ raw\
-│  ├─ cs-agents-centene-2026-06-23.json
-│  └─ cu-by-customer-centene-2026-06-23.json
-├─ curated\
-│  ├─ centene-curated-2026-06-23.json   ← drives this dashboard
-│  └─ centene-executive-summary-2026-06-23.md
-├─ mappings\
-│  ├─ canonical_accounts.json   (TPID 2335114 persisted)
-│  └─ p3_commitments.csv        (awaiting entitlement value)
-├─ formulas\
-│  └─ formula_register.json     (v1.0, F001-F012)
-└─ dashboard\
-   └─ centene-credit-ops.html   ← this file</div>
-
-  <div class="section-title">Per-product credit detail (28d &amp; MTD)</div>
+  <div class="section-title">Formula register v1.0</div>
   <div class="card">
     <table class="product-table">
-      <thead><tr><th>Product</th><th class="num">All 28d</th><th class="num">Prepaid 28d</th><th class="num">PayGo 28d</th><th class="num">All MTD</th><th class="num">Prepaid MTD</th><th class="num">PayGo MTD</th></tr></thead>
+      <thead><tr><th>ID</th><th>Name</th><th>Logic</th><th class="num">Value</th><th>Confidence</th><th>Status</th></tr></thead>
       <tbody>
-        <tr><td>Power Automate</td><td class="num">25,190</td><td class="num">25,190</td><td class="num delta-zero">0</td><td class="num">21,938</td><td class="num">21,938</td><td class="num delta-zero">0</td></tr>
-        <tr><td>Microsoft Copilot Studio</td><td class="num">4,369</td><td class="num">4,369</td><td class="num delta-zero">0</td><td class="num">4,082</td><td class="num">4,082</td><td class="num delta-zero">0</td></tr>
-        <tr style="font-weight:600;background:var(--surface-2);"><td>Total</td><td class="num">29,559</td><td class="num">29,559</td><td class="num">0</td><td class="num">26,021</td><td class="num">26,021</td><td class="num">0</td></tr>
+        <tr><td>F001</td><td>total_credits_consumed</td><td><code>SUM(credits) over 28d</code></td><td class="num">29,559</td><td>HIGH</td><td><span class="status-pill status-ok">OK</span></td></tr>
+        <tr><td>F002</td><td>prepaid_credits_consumed</td><td><code>SUM where billing_type IN ('prepaid','committed')</code></td><td class="num">29,559</td><td>HIGH</td><td><span class="status-pill status-ok">OK</span></td></tr>
+        <tr><td>F003</td><td>payg_credits_consumed</td><td><code>SUM where billing_type = 'pay-as-you-go'</code></td><td class="num">0</td><td>HIGH</td><td><span class="status-pill status-ok">OK</span></td></tr>
+        <tr><td>F004</td><td>3mo_burn_rate</td><td><code>SUM(28d)</code> (28d proxy, not true 90d)</td><td class="num">29,559</td><td>MEDIUM</td><td><span class="status-pill status-partial">Approx</span></td></tr>
+        <tr><td>F005</td><td>mom_growth_rate</td><td>(current − prior) / prior</td><td class="num">—</td><td>—</td><td><span class="status-pill status-skipped">Skipped</span></td></tr>
+        <tr><td>F006</td><td>credits_purchased</td><td>From commitment source</td><td class="num">—</td><td>—</td><td><span class="status-pill status-skipped">Needs entitlement</span></td></tr>
+        <tr><td>F007</td><td>credits_remaining</td><td><code>purchased − consumed</code></td><td class="num">—</td><td>—</td><td><span class="status-pill status-skipped">Needs entitlement</span></td></tr>
+        <tr><td>F008</td><td>percent_consumed</td><td><code>consumed / purchased</code></td><td class="num">—</td><td>—</td><td><span class="status-pill status-skipped">Needs entitlement</span></td></tr>
+        <tr><td>F009</td><td>runway_months</td><td><code>remaining / burn_rate</code></td><td class="num">—</td><td>—</td><td><span class="status-pill status-skipped">Needs entitlement</span></td></tr>
+        <tr><td>F010</td><td>adoption_risk_band</td><td>Percent-consumed thresholds</td><td class="num">likely LOW</td><td>PARTIAL</td><td><span class="status-pill status-partial">Indirect</span></td></tr>
+        <tr><td>F011</td><td>overage_risk_band</td><td>Runway threshold + PayGo signal</td><td class="num">LOW</td><td>HIGH</td><td><span class="status-pill status-ok">OK</span></td></tr>
+        <tr><td>F012</td><td>expansion_signal</td><td>MoM &gt; 20% × 2mo AND runway &lt; 6</td><td class="num">false</td><td>HIGH</td><td><span class="status-pill status-ok">OK</span></td></tr>
       </tbody>
     </table>
   </div>
 
-  <div class="section-title">Per-product user adoption (MAU)</div>
+  <div class="section-title">Calculation log (numbers that derive vs source)</div>
   <div class="card">
     <table class="product-table">
-      <thead><tr><th>Product</th><th class="num">DAU</th><th class="num">WAU</th><th class="num">MAU</th><th class="num">MoM</th><th class="num">DAU/MAU</th><th class="num">WAU/MAU</th></tr></thead>
-      <tbody id="adoptionRows"></tbody>
+      <thead><tr><th>Number on dashboard</th><th>How derived</th><th>Source</th></tr></thead>
+      <tbody>
+        <tr><td>22% of peak</td><td><code>29,559 / 131,587 × 100</code> = 22.46%, rounded</td><td>Both numbers direct from Customer Hub visuals</td></tr>
+        <tr><td>85% Power Automate share</td><td><code>25,190 / 29,559 × 100</code> = 85.2%</td><td>Customer Hub Copilot Credits by Product</td></tr>
+        <tr><td>99.98% Generative tenant share</td><td><code>1,198,263 / 1,198,536 × 100</code></td><td>CS Studio Agents per-tenant detail table</td></tr>
+        <tr><td>Monthly trend bars (Jul 2025 - May 2026 intermediate values)</td><td>Approximated from "Prepaid Copilot Credits by Month" chart axis labels (~0.18M to ~0.13M range)</td><td>Approximation flagged in <code>raw/cu-by-customer-centene-2026-06-23.json</code></td></tr>
+        <tr><td>Peak 131,587 (Dec 2025) · Current 26,021 (Jun MTD)</td><td>Direct values from chart annotations</td><td>Customer Hub Number-of-Peak annotation + MTD column</td></tr>
+        <tr><td>0 months exceeding entitlement (lifetime)</td><td>Direct value from chart annotation</td><td>Customer Hub Number-of-Months-Exceeding-Entitlement annotation</td></tr>
+      </tbody>
     </table>
   </div>
 </section>
@@ -392,28 +606,17 @@ footer { padding: 24px 48px; color: var(--text-3); font-size: 11px; text-align: 
 </main>
 
 <footer>
-  Built 2026-06-23 from copilot-credit-ops\centene\curated\. Refreshes weekly via automation "Centene Copilot Credit Ops - Weekly". All numbers trace to Power BI sources cited in tooltips and operator view. No fabricated data.
+  Built 2026-06-23 from <span class="footer-brand">copilot-credit-ops/centene/curated/</span>. Refreshes weekly via automation "Centene Copilot Credit Ops - Weekly". All numbers trace to Power BI sources cited in tooltips and Methodology tab. No fabricated data.<br>
+  Microsoft Copilot Studio · For Centene Corporation (TPID 2335114) · Microsoft internal · do not share externally.
 </footer>
 
 <script>
 const DATA = {
-  account: "Centene Corporation",
-  tpid: "2335114",
-  credits: {
-    all_28d: 29559, prepaid_28d: 29559, paygo_28d: 0,
-    all_mtd: 26021, prepaid_mtd: 26021, paygo_mtd: 0,
-    peak_month_value: 131587, peak_month_label: "Dec 2025",
-    months_exceeding_entitlement: 0
-  },
   trend: [
     { m: "Jul 2025", v: 18000 }, { m: "Aug 2025", v: 26000 }, { m: "Sep 2025", v: 32000 },
     { m: "Oct 2025", v: 71000 }, { m: "Nov 2025", v: 95000 }, { m: "Dec 2025", v: 131587 },
     { m: "Jan 2026", v: 78000 }, { m: "Feb 2026", v: 62000 }, { m: "Mar 2026", v: 54000 },
     { m: "Apr 2026", v: 41000 }, { m: "May 2026", v: 34000 }, { m: "Jun 2026", v: 26021 }
-  ],
-  productCredits: [
-    { p: "Power Automate", all28d: 25190, mtd: 21938 },
-    { p: "Microsoft Copilot Studio", all28d: 4369, mtd: 4082 }
   ],
   adoption: [
     { p: "Microsoft Copilot Studio C2 User", dau: 12, wau: 241, mau: 805, mom: -10.56, dauMau: 6.1, wauMau: 29.9 },
@@ -431,34 +634,25 @@ const DATA = {
 };
 
 const KPIs = [
-  { label: "Copilot Credits 28d", value: "29,559", sub: "100% Prepaid", badge: { txt: "Inside entitlement", cls: "badge-low" }, pulse: true,
-    tip: "<strong>29,559 billable Copilot Credits</strong> consumed in the trailing 28 days. 100% Prepaid, zero PayGo. <span class='tip-source'>Source: Customer Hub App [Production] / Copilot usage by customer, TPID 2335114</span>" },
-  { label: "PayGo Exposure 28d", value: "0", sub: "No overage spend",
+  { label: "Copilot Credits 28d", value: "29,559", sub: "100% Prepaid",
+    badge: { txt: "Inside entitlement", cls: "badge-low" },
+    tip: "<strong>29,559 billable Copilot Credits</strong> in the trailing 28 days. 100% Prepaid, zero PayGo. <span class='tip-source'>Source: Customer Hub / Copilot usage by customer, TPID 2335114</span>" },
+  { label: "PayGo 28d", value: "0", sub: "No overage spend",
     badge: { txt: "Healthiest posture", cls: "badge-low" },
-    tip: "<strong>Zero pay-as-you-go credits</strong> in the last 28 days and zero lifetime. No risk of unexpected overage billing. <span class='tip-source'>Source: Customer Hub PayGo Credits 28d visual</span>" },
-  { label: "Months Over Entitlement", value: "0", sub: "Lifetime",
-    badge: { txt: "Never breached", cls: "badge-low" },
-    tip: "Customer Hub report tracks an internal entitlement and reports months where consumption exceeded it. <strong>0 months over lifetime</strong> means the prepaid commitment has always been sufficient. <span class='tip-source'>Source: Customer Hub annotation 'Number of Months Exceeding Entitlement'</span>" },
-  { label: "Peak Month", value: "131,587", sub: "Dec 2025",
-    badge: { txt: "4.4x current burn", cls: "badge-info" },
-    tip: "<strong>Highest single month of prepaid credit consumption</strong> over the trailing 12-month window. Current 28d burn (29,559) is 22% of peak. Worth investigating what drove the Dec 2025 spike. <span class='tip-source'>Source: Customer Hub 'Prepaid Copilot Credits by Month' annotation</span>" },
-  { label: "Overage Risk", value: "LOW", badge: { txt: "F011 v1.0", cls: "badge-low" },
-    tip: "<strong>F011 overage_risk_band</strong> = LOW. Inferred from: 0 PayGo 28d &amp; MTD, 0 lifetime months over entitlement, current burn 22% of peak. Confidence HIGH." },
-  { label: "Expansion Signal", value: "None", badge: { txt: "Trend is down", cls: "badge-info" },
-    tip: "<strong>F012 expansion_signal</strong> = false. Trigger requires MoM growth &gt; 20% for 2+ months AND runway &lt; 6. Current trajectory is decline from Dec 2025 peak." },
-  { label: "Adoption Risk", value: "Unknown", sub: "Likely LOW (indirect)",
-    badge: { txt: "Needs entitlement", cls: "badge-med" },
-    tip: "<strong>F010 adoption_risk_band</strong> cannot be computed without the prepaid entitlement value. Indirect signal: 805 MAU on Copilot Studio C2 + 0 months over entitlement suggests right-sized. Populate <code>mappings/p3_commitments.csv</code> to promote from PARTIAL to LIVE." },
-  { label: "Primary Classification", value: "Investigate", sub: "ADOPTION_INVESTIGATION",
-    badge: { txt: "Not alarm", cls: "badge-info" },
-    tip: "Centene is healthy on overage but burn dropped 78% from peak. <strong>Investigate, don't alarm.</strong> Map Dec 2025 peak consumers to determine if oversized commitment, project-bound spike, or quiet decline." }
+    tip: "<strong>Zero pay-as-you-go credits</strong> in 28d and lifetime. No risk of unexpected overage billing." },
+  { label: "Overage Risk", value: "LOW", sub: "F011 deterministic",
+    badge: { txt: "Confidence HIGH", cls: "badge-low" },
+    tip: "<strong>F011 overage_risk_band</strong> = LOW. Inferred from: 0 PayGo, 0 lifetime months over entitlement, current 22% of peak." },
+  { label: "Expansion Signal", value: "None", sub: "Trend is down",
+    badge: { txt: "F012 false", cls: "badge-info" },
+    tip: "<strong>F012 expansion_signal</strong> = false. Requires MoM growth &gt; 20% × 2 mo AND runway &lt; 6. Current trajectory is decline from peak." }
 ];
 
 function renderKPIs() {
   document.getElementById('kpiGrid').innerHTML = KPIs.map(k => `
-    <div class="kpi ${k.pulse ? 'kpi-pulse' : ''}" data-tip="${k.tip.replace(/"/g, '&quot;')}">
+    <div class="kpi" data-tip="${k.tip.replace(/"/g, '&quot;')}">
       <div class="kpi-label">${k.label} <span class="kpi-info">i</span></div>
-      <div class="kpi-value ${k.value === 'Unknown' ? 'muted' : ''}">${k.value}</div>
+      <div class="kpi-value">${k.value}</div>
       ${k.sub ? `<div class="kpi-sub">${k.sub}</div>` : ''}
       ${k.badge ? `<div class="kpi-badge ${k.badge.cls}">${k.badge.txt}</div>` : ''}
     </div>
@@ -467,21 +661,119 @@ function renderKPIs() {
 
 function renderAdoption() {
   document.getElementById('adoptionRows').innerHTML = DATA.adoption.map(r => {
-    const cls = r.mom > 5 ? 'delta-pos' : r.mom < -5 ? 'delta-neg' : 'delta-zero';
+    const cls = r.mom > 5 ? 'delta-pos' : r.mom < -5 ? 'delta-neg' : '';
+    const color = r.mom > 5 ? 'var(--accent-emerald)' : r.mom < -5 ? 'var(--accent-rose)' : 'var(--text-3)';
     return `<tr>
-      <td>${r.p}</td>
-      <td class="num">${r.dau}</td><td class="num">${r.wau}</td>
+      <td>${r.p}</td><td class="num">${r.dau}</td><td class="num">${r.wau}</td>
       <td class="num">${r.mau.toLocaleString()}</td>
-      <td class="num ${cls}">${r.mom > 0 ? '+' : ''}${r.mom.toFixed(2)}%</td>
+      <td class="num" style="color:${color};font-weight:600;">${r.mom > 0 ? '+' : ''}${r.mom.toFixed(2)}%</td>
       <td class="num">${r.dauMau.toFixed(1)}%</td>
       <td class="num">${r.wauMau.toFixed(1)}%</td>
     </tr>`;
   }).join('');
 }
 
+/* === Purchased vs Used + PAYG hero chart === */
+function renderPurchasedUsed() {
+  const svg = d3.select("#chartPurchasedUsed");
+  const W = svg.node().clientWidth, H = 260, M = { t: 16, r: 16, b: 30, l: 130 };
+  svg.attr('viewBox', `0 0 ${W} ${H}`).selectAll('*').remove();
+
+  const data = [
+    { label: "Prepaid Purchased", v: null, color: "#94a3b8", empty: true },
+    { label: "Prepaid Used (28d)", v: 29559, color: "var(--cs-purple)" },
+    { label: "PayGo Used (28d)", v: 0, color: "#10b981" }
+  ];
+  const maxV = 50000; // placeholder scale until entitlement populated
+  const y = d3.scaleBand().domain(data.map(d => d.label)).range([M.t, H - M.b]).padding(.3);
+  const x = d3.scaleLinear().domain([0, maxV]).range([M.l, W - M.r]);
+
+  // axis
+  svg.append('g').attr('transform', `translate(0,${H-M.b})`)
+    .call(d3.axisBottom(x).ticks(5).tickFormat(d => d >= 1000 ? (d/1000).toFixed(0) + 'K' : d))
+    .selectAll('text').style('font-size','10px').style('fill','#8892a6');
+  svg.append('g').attr('transform', `translate(${M.l},0)`)
+    .call(d3.axisLeft(y).tickSize(0)).call(g => g.select('.domain').remove())
+    .selectAll('text').style('font-size','12px').style('fill','#4a5468').style('font-weight','500');
+
+  // bars
+  svg.append('g').selectAll('rect').data(data).join('rect')
+    .attr('x', M.l).attr('y', d => y(d.label) + 4).attr('height', y.bandwidth() - 8)
+    .attr('width', 0)
+    .attr('fill', d => d.empty ? 'url(#diag)' : d.color)
+    .attr('stroke', d => d.empty ? '#cbd5e1' : 'none')
+    .attr('stroke-dasharray', d => d.empty ? '4,3' : null)
+    .attr('rx', 4).style('cursor','help')
+    .each(function(d) {
+      this.setAttribute('data-tip', d.empty
+        ? `<strong>${d.label}</strong>: awaiting entitlement value. Populate <code>mappings/p3_commitments.csv</code> to fill this bar.`
+        : `<strong>${d.label}</strong>: ${d.v.toLocaleString()} credits<br><span class='tip-source'>${d.label.includes('Prepaid') ? 'From Customer Hub Prepaid 28d total' : 'From Customer Hub PayGo 28d total'}</span>`);
+    })
+    .transition().duration(900).delay((d,i) => i*80)
+    .attr('width', d => d.empty ? x(maxV) - M.l : Math.max(2, x(d.v) - M.l));
+
+  // diagonal stripe pattern for empty state
+  const defs = svg.append('defs');
+  const pattern = defs.append('pattern').attr('id', 'diag').attr('width', 8).attr('height', 8)
+    .attr('patternUnits', 'userSpaceOnUse').attr('patternTransform', 'rotate(45)');
+  pattern.append('rect').attr('width', 8).attr('height', 8).attr('fill', '#f1f5f9');
+  pattern.append('rect').attr('width', 2).attr('height', 8).attr('fill', '#cbd5e1');
+
+  // value labels
+  svg.append('g').selectAll('text').data(data).join('text')
+    .attr('x', d => d.empty ? M.l + 12 : Math.max(M.l + 32, x(d.v || 0) - 6))
+    .attr('y', d => y(d.label) + y.bandwidth()/2 + 5)
+    .attr('text-anchor', d => d.empty ? 'start' : 'end')
+    .style('font-size','12px').style('font-weight','700').style('opacity', 0)
+    .style('fill', d => d.empty ? '#8892a6' : 'white')
+    .text(d => d.empty ? 'awaiting entitlement' : d.v.toLocaleString())
+    .transition().delay(1000).duration(400).style('opacity', 1);
+}
+
+/* === Burn-vs-Peak gauge (arc) === */
+function renderGauge() {
+  const svg = d3.select("#chartGauge");
+  const W = svg.node().clientWidth, H = 220;
+  const cx = W/2, cy = H * .85, R = Math.min(W/2.4, H * .9);
+  svg.attr('viewBox', `0 0 ${W} ${H}`).selectAll('*').remove();
+
+  const arcBg = d3.arc().innerRadius(R - 22).outerRadius(R).startAngle(-Math.PI/2).endAngle(Math.PI/2);
+  svg.append('path').attr('d', arcBg()).attr('transform', `translate(${cx},${cy})`).attr('fill', '#eef1f6');
+
+  const pct = 29559 / 131587;
+  const arcFg = d3.arc().innerRadius(R - 22).outerRadius(R)
+    .startAngle(-Math.PI/2)
+    .endAngle(-Math.PI/2);
+  const path = svg.append('path').attr('transform', `translate(${cx},${cy})`)
+    .attr('fill', 'url(#grad)').attr('d', arcFg());
+
+  const defs = svg.append('defs');
+  const grad = defs.append('linearGradient').attr('id','grad').attr('x1','0').attr('x2','1');
+  grad.append('stop').attr('offset','0%').attr('stop-color','#10b981');
+  grad.append('stop').attr('offset','100%').attr('stop-color','#8B5CF6');
+
+  path.transition().duration(1400).attrTween('d', () => {
+    const i = d3.interpolate(-Math.PI/2, -Math.PI/2 + Math.PI * pct);
+    return t => d3.arc().innerRadius(R-22).outerRadius(R).startAngle(-Math.PI/2).endAngle(i(t))();
+  });
+
+  // center value
+  svg.append('text').attr('x', cx).attr('y', cy - 30).attr('text-anchor','middle')
+    .style('font-size','42px').style('font-weight','700').style('fill','var(--cs-purple-2)')
+    .style('letter-spacing','-.02em').text('22%');
+  svg.append('text').attr('x', cx).attr('y', cy - 8).attr('text-anchor','middle')
+    .style('font-size','11px').style('text-transform','uppercase').style('letter-spacing','.08em')
+    .style('fill','#8892a6').style('font-weight','600').text('of Dec 2025 peak');
+
+  // peak marker (right end)
+  svg.append('text').attr('x', cx + R + 6).attr('y', cy + 4).style('font-size','10px').style('fill','#f59e0b').style('font-weight','600').text('peak');
+  svg.append('text').attr('x', cx - R - 6).attr('y', cy + 4).style('text-anchor','end').style('font-size','10px').style('fill','#10b981').style('font-weight','600').text('0');
+}
+
+/* === Trend === */
 function renderTrend() {
   const svg = d3.select("#chartTrend");
-  const W = svg.node().clientWidth, H = 280, M = { t: 16, r: 16, b: 32, l: 56 };
+  const W = svg.node().clientWidth, H = 260, M = { t: 16, r: 16, b: 30, l: 56 };
   svg.attr('viewBox', `0 0 ${W} ${H}`).selectAll('*').remove();
   const x = d3.scaleBand().domain(DATA.trend.map(d=>d.m)).range([M.l, W-M.r]).padding(.18);
   const y = d3.scaleLinear().domain([0, d3.max(DATA.trend, d=>d.v)*1.1]).range([H-M.b, M.t]);
@@ -497,10 +789,10 @@ function renderTrend() {
   const bars = svg.append('g').selectAll('rect').data(DATA.trend).join('rect')
     .attr('x', d=>x(d.m)).attr('width', x.bandwidth())
     .attr('y', H-M.b).attr('height', 0)
-    .attr('fill', d => d.m === 'Dec 2025' ? '#f59e0b' : d.m === 'Jun 2026' ? '#2563eb' : 'rgba(37,99,235,.45)')
+    .attr('fill', d => d.m === 'Dec 2025' ? 'var(--accent-amber)' : d.m === 'Jun 2026' ? 'var(--cs-purple)' : 'rgba(139,92,246,.4)')
     .attr('rx', 4).style('cursor','help')
     .each(function(d) {
-      this.setAttribute('data-tip', `<strong>${d.m}</strong>: ${d.v.toLocaleString()} prepaid Copilot Credits<br>${d.m === 'Dec 2025' ? "<span class='tip-source'>Peak month. Worth investigation - what drove this?</span>" : d.m === 'Jun 2026' ? "<span class='tip-source'>Current MTD. 26,021 per source.</span>" : `<span class='tip-source'>${((d.v / 131587) * 100).toFixed(0)}% of Dec 2025 peak</span>`}`);
+      this.setAttribute('data-tip', `<strong>${d.m}</strong>: ${d.v.toLocaleString()} prepaid Copilot Credits<br>${d.m === 'Dec 2025' ? "<span class='tip-source'>Peak month — anchor for investigation tab</span>" : d.m === 'Jun 2026' ? "<span class='tip-source'>Current MTD value</span>" : `<span class='tip-source'>${((d.v / 131587) * 100).toFixed(0)}% of Dec 2025 peak</span>`}`);
     });
   bars.transition().duration(900).delay((d,i)=>i*40)
     .attr('y', d=>y(d.v)).attr('height', d=>H-M.b-y(d.v));
@@ -511,60 +803,7 @@ function renderTrend() {
     .transition().delay(900).duration(400).style('opacity',1);
 }
 
-function renderBurn() {
-  const svg = d3.select("#chartBurn");
-  const W = svg.node().clientWidth, H = 280, M = { t: 16, r: 16, b: 40, l: 180 };
-  svg.attr('viewBox', `0 0 ${W} ${H}`).selectAll('*').remove();
-  const data = DATA.productCredits;
-  const y = d3.scaleBand().domain(data.map(d=>d.p)).range([M.t, H-M.b]).padding(.3);
-  const x = d3.scaleLinear().domain([0, d3.max(data, d=>Math.max(d.all28d, d.mtd))*1.1]).range([M.l, W-M.r]);
-  svg.append('g').attr('transform', `translate(0,${H-M.b})`)
-    .call(d3.axisBottom(x).ticks(4).tickFormat(d=>d>=1000?(d/1000).toFixed(0)+'K':d))
-    .selectAll('text').style('font-size','10px').style('fill','#8892a6');
-  svg.append('g').attr('transform', `translate(${M.l},0)`)
-    .call(d3.axisLeft(y).tickSize(0)).call(g=>g.select('.domain').remove())
-    .selectAll('text').style('font-size','11px').style('fill','#4a5468');
-  svg.append('g').selectAll('rect.b28').data(data).join('rect')
-    .attr('class','b28').attr('x', M.l).attr('y', d=>y(d.p)).attr('height', y.bandwidth()/2-2)
-    .attr('width', 0).attr('fill','#2563eb').attr('rx', 4).style('cursor','help')
-    .each(function(d) { this.setAttribute('data-tip', `<strong>${d.p}</strong><br>28d: ${d.all28d.toLocaleString()} prepaid credits<br><span class='tip-source'>From "Copilot Credits by Product"</span>`); })
-    .transition().duration(900).attr('width', d=>x(d.all28d)-M.l);
-  svg.append('g').selectAll('rect.bm').data(data).join('rect')
-    .attr('class','bm').attr('x', M.l).attr('y', d=>y(d.p)+y.bandwidth()/2+2).attr('height', y.bandwidth()/2-2)
-    .attr('width', 0).attr('fill','#14b8a6').attr('rx', 4).style('cursor','help')
-    .each(function(d) { this.setAttribute('data-tip', `<strong>${d.p}</strong><br>MTD: ${d.mtd.toLocaleString()} prepaid credits<br><span class='tip-source'>Month-to-date as of last refresh</span>`); })
-    .transition().duration(900).delay(120).attr('width', d=>x(d.mtd)-M.l);
-  const lg = svg.append('g').attr('transform', `translate(${M.l},${H-12})`);
-  lg.append('rect').attr('width',10).attr('height',10).attr('fill','#2563eb').attr('rx',2);
-  lg.append('text').attr('x',16).attr('y',9).style('font-size','10px').style('fill','#4a5468').text('28d');
-  lg.append('rect').attr('x',60).attr('width',10).attr('height',10).attr('fill','#14b8a6').attr('rx',2);
-  lg.append('text').attr('x',76).attr('y',9).style('font-size','10px').style('fill','#4a5468').text('MTD');
-}
-
-function renderUsers() {
-  const svg = d3.select("#chartUsers");
-  const W = svg.node().clientWidth, H = 260, M = { t: 12, r: 60, b: 28, l: 240 };
-  svg.attr('viewBox', `0 0 ${W} ${H}`).selectAll('*').remove();
-  const top = DATA.adoption.slice(0,6);
-  const y = d3.scaleBand().domain(top.map(d=>d.p)).range([M.t, H-M.b]).padding(.22);
-  const x = d3.scaleLinear().domain([0, d3.max(top,d=>d.mau)*1.05]).range([M.l, W-M.r]);
-  svg.append('g').attr('transform',`translate(0,${H-M.b})`)
-    .call(d3.axisBottom(x).ticks(4)).selectAll('text').style('font-size','10px').style('fill','#8892a6');
-  svg.append('g').attr('transform',`translate(${M.l},0)`)
-    .call(d3.axisLeft(y).tickSize(0)).call(g=>g.select('.domain').remove())
-    .selectAll('text').style('font-size','11px').style('fill','#4a5468');
-  svg.append('g').selectAll('rect').data(top).join('rect')
-    .attr('x', M.l).attr('y', d=>y(d.p)).attr('height', y.bandwidth())
-    .attr('width', 0).attr('fill', '#7c3aed').attr('rx', 4).style('cursor','help')
-    .each(function(d) { this.setAttribute('data-tip', `<strong>${d.p}</strong><br>MAU: ${d.mau.toLocaleString()} | WAU: ${d.wau} | DAU: ${d.dau}<br>MoM: ${d.mom>0?'+':''}${d.mom.toFixed(1)}%<br><span class='tip-source'>Source: Copilot Usage Metrics by Product</span>`); })
-    .transition().duration(900).delay((d,i)=>i*60).attr('width', d=>x(d.mau)-M.l);
-  svg.append('g').selectAll('text').data(top).join('text')
-    .attr('x', d=>x(d.mau)+6).attr('y', d=>y(d.p)+y.bandwidth()/2+4)
-    .style('font-size','11px').style('font-weight','600').style('fill','#4a5468')
-    .style('opacity',0).text(d=>d.mau.toLocaleString())
-    .transition().delay(900).duration(400).style('opacity',1);
-}
-
+/* === Tooltip === */
 const tip = document.getElementById('tooltip');
 document.addEventListener('mouseover', e => {
   const el = e.target.closest('[data-tip]');
@@ -574,8 +813,8 @@ document.addEventListener('mouseover', e => {
 });
 document.addEventListener('mousemove', e => {
   if (!tip.classList.contains('visible')) return;
-  const x = Math.min(e.clientX + 14, window.innerWidth - 340);
-  const y = Math.min(e.clientY + 14, window.innerHeight - 120);
+  const x = Math.min(e.clientX + 14, window.innerWidth - 360);
+  const y = Math.min(e.clientY + 14, window.innerHeight - 140);
   tip.style.left = x + 'px';
   tip.style.top = y + 'px';
 });
@@ -583,27 +822,30 @@ document.addEventListener('mouseout', e => {
   if (e.target.closest('[data-tip]')) tip.classList.remove('visible');
 });
 
+/* === Tabs === */
 document.querySelectorAll('.tab').forEach(t => {
   t.addEventListener('click', () => {
     document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
     document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
     t.classList.add('active');
     document.getElementById('panel-'+t.dataset.tab).classList.add('active');
-    if (t.dataset.tab === 'exec') { renderTrend(); renderBurn(); renderUsers(); }
+    if (t.dataset.tab === 'exec') { renderPurchasedUsed(); renderGauge(); renderTrend(); }
   });
 });
 
+/* === Particles === */
 function startParticles() {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const c = document.getElementById('bgCanvas');
   const ctx = c.getContext('2d');
   function size() { c.width = window.innerWidth; c.height = window.innerHeight; }
   size(); window.addEventListener('resize', size);
-  const N = 80;
+  const N = 60;
   const ps = Array.from({length: N}, () => ({
     x: Math.random()*c.width, y: Math.random()*c.height,
-    vx: (Math.random()-.5)*.18, vy: (Math.random()-.5)*.18,
-    r: 1 + Math.random()*1.5
+    vx: (Math.random()-.5)*.15, vy: (Math.random()-.5)*.15,
+    r: 1 + Math.random()*1.2,
+    hue: 250 + Math.random()*40
   }));
   function frame() {
     ctx.clearRect(0,0,c.width,c.height);
@@ -612,14 +854,14 @@ function startParticles() {
       if (p.x < 0 || p.x > c.width) p.vx *= -1;
       if (p.y < 0 || p.y > c.height) p.vy *= -1;
       ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-      ctx.fillStyle = 'hsla(220, 70%, 55%, .35)';
+      ctx.fillStyle = `hsla(${p.hue}, 70%, 60%, .3)`;
       ctx.fill();
     });
     for (let i=0;i<N;i++) for (let j=i+1;j<N;j++) {
       const dx = ps[i].x-ps[j].x, dy = ps[i].y-ps[j].y, d = Math.sqrt(dx*dx+dy*dy);
       if (d < 110) {
         ctx.beginPath(); ctx.moveTo(ps[i].x, ps[i].y); ctx.lineTo(ps[j].x, ps[j].y);
-        ctx.strokeStyle = `rgba(37,99,235,${0.06*(1-d/110)})`; ctx.lineWidth = 1; ctx.stroke();
+        ctx.strokeStyle = `rgba(139,92,246,${0.05*(1-d/110)})`; ctx.lineWidth = 1; ctx.stroke();
       }
     }
     requestAnimationFrame(frame);
@@ -629,11 +871,11 @@ function startParticles() {
 
 renderKPIs();
 renderAdoption();
+renderPurchasedUsed();
+renderGauge();
 renderTrend();
-renderBurn();
-renderUsers();
 startParticles();
-window.addEventListener('resize', () => { renderTrend(); renderBurn(); renderUsers(); });
+window.addEventListener('resize', () => { renderPurchasedUsed(); renderGauge(); renderTrend(); });
 </script>
 </body>
 </html>
